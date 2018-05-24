@@ -8,8 +8,9 @@
       </logicalFolder>
       <logicalFolder name="driver" displayName="driver" projectFiles="true">
         <itemPath>driver/driver.h</itemPath>
-        <itemPath>driver/port.c</itemPath>
         <itemPath>driver/port.h</itemPath>
+        <itemPath>driver/uart.c</itemPath>
+        <itemPath>driver/uart.h</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
       </logicalFolder>
@@ -26,6 +27,7 @@
       </logicalFolder>
       <logicalFolder name="driver" displayName="driver" projectFiles="true">
         <itemPath>driver/driver.c</itemPath>
+        <itemPath>driver/port.c</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
       </logicalFolder>

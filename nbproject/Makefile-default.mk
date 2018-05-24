@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c
+SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/uart.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/uart.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o
+OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o
 
 # Source Files
-SOURCEFILES=app/main.c driver/driver.c driver/port.c
+SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/uart.c
 
 
 CFLAGS=
@@ -115,6 +115,13 @@ ${OBJECTDIR}/driver/port.o: driver/port.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/port.c  -o ${OBJECTDIR}/driver/port.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/port.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/driver/port.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/driver/uart.o: driver/uart.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/driver" 
+	@${RM} ${OBJECTDIR}/driver/uart.o.d 
+	@${RM} ${OBJECTDIR}/driver/uart.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/uart.c  -o ${OBJECTDIR}/driver/uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/uart.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/driver/uart.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/app/main.o: app/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/app" 
@@ -136,6 +143,13 @@ ${OBJECTDIR}/driver/port.o: driver/port.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/driver/port.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/port.c  -o ${OBJECTDIR}/driver/port.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/port.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/driver/port.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/driver/uart.o: driver/uart.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/driver" 
+	@${RM} ${OBJECTDIR}/driver/uart.o.d 
+	@${RM} ${OBJECTDIR}/driver/uart.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/uart.c  -o ${OBJECTDIR}/driver/uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/uart.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/driver/uart.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
