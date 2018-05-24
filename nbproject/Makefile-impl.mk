@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Almond.X
+PROJECTNAME=almond
 
 # Active Configuration
 DEFAULTCONF=default

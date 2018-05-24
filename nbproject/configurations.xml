@@ -10,11 +10,11 @@
         <itemPath>driver/driver.h</itemPath>
         <itemPath>driver/port.h</itemPath>
         <itemPath>driver/uart.h</itemPath>
-        <itemPath>util/ring.h</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
       </logicalFolder>
       <logicalFolder name="f1" displayName="util" projectFiles="true">
+        <itemPath>util/ring.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -31,12 +31,11 @@
         <itemPath>driver/driver.c</itemPath>
         <itemPath>driver/port.c</itemPath>
         <itemPath>driver/uart.c</itemPath>
-        <itemPath>driver/config.c</itemPath>
-        <itemPath>util/ring.c</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
       </logicalFolder>
       <logicalFolder name="f1" displayName="util" projectFiles="true">
+        <itemPath>util/ring.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -60,7 +59,7 @@
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.34</languageToolchainVersion>
-        <platform>3</platform>
+        <platform>2</platform>
       </toolsSet>
       <compileType>
         <linkerTool>
@@ -118,7 +117,7 @@
         <property key="oXC16gcc-sfr-warn" value="false"/>
         <property key="oXC16gcc-smar-io-lvl" value="1"/>
         <property key="oXC16gcc-smart-io-fmt" value=""/>
-        <property key="optimization-level" value="0"/>
+        <property key="optimization-level" value="1"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros" value=""/>
