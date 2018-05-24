@@ -2,79 +2,75 @@
 #include <p33Fxxxx.h>
 #include <stddef.h>
 
-void pin_dir(pin_name_t pin, bool dir) {
-    port_name_t port = pin_get_port(pin);
-    uint16_t id = pin_get_number(pin);
-    uint16_t mask = 1u << id;
-    switch (port) {
-        case PORT_A:
-            TRISA = dir ? TRISA | mask : TRISA&~mask;
-            return;
-        case PORT_B:
-            TRISB = dir ? TRISB | mask : TRISB&~mask;
-            return;
-        case PORT_C:
-            TRISC = dir ? TRISC | mask : TRISC&~mask;
-            return;
-        default:
-            return;
+static const size_t port_max = 3;
+//PORT周り
+static volatile uint16_t *const trises[]={&PORTA,&PORTB,&PORTC};
+static volatile uint16_t *const odcs[]={&ODCA,&ODCB,&ODCC};
+static volatile uint16_t *const  ports[]={&PORTA,&PORTB,&PORTC};
+static volatile uint16_t *const lats[]={&LATA,&LATB,&LATC};
+
+//bit operation
+static inline void bits_write(volatile uint16_t* target,uint16_t mask,bool value){
+    if (value){
+        *target |=mask;
+    }else{
+        *target &=~mask;
+    }
+}
+
+void pin_dir(pin_name_t pin, bool flag) {
+    uint16_t port = pin_get_port(pin);
+    uint16_t mask = 1u << pin_get_number(pin);
+    volatile uint16_t *target = trises[port];
+    if (port<port_max){
+        bits_write(target,mask,flag);
+    }
+}
+
+void pin_drain(pin_name_t pin,bool flag){
+    uint16_t port = pin_get_port(pin);
+    uint16_t mask = 1u << pin_get_number(pin);
+    volatile uint16_t *target =odcs[port];
+    if (port<port_max){
+       bits_write(target,mask,flag);
     }
 }
 
 bool pin_read(pin_name_t pin) {
-    port_name_t port = pin_get_port(pin);
-    uint16_t id = pin_get_number(pin);
-    uint16_t mask = 1u << id;
+    uint16_t port = pin_get_port(pin);
+    uint16_t mask = 1u << pin_get_number(pin);
+    volatile uint16_t *target =odcs[port];
+    if (port<port_max){
+        return *target&mask;
+    }else{
+        return false;
+    }
+}
 
-    switch (port) {
-        case PORT_A:
-            return PORT_A&mask;
-        case PORT_B:
-            return PORT_B&mask;
-        case PORT_C:
-            return PORT_C&mask;
-        default:
-            return false;
+void pin_write(pin_name_t pin,bool flag) {
+    uint16_t port = pin_get_port(pin);
+    uint16_t mask = 1u << pin_get_number(pin);
+    volatile uint16_t *target =lats[port];
+    if (port<port_max){
+      bits_write(target,mask,flag);
     }
 }
 
 void pin_set(pin_name_t pin) {
-    port_name_t port = pin_get_port(pin);
-    uint16_t id = pin_get_number(pin);
-    uint16_t mask = 1u << id;
-
-    switch (port) {
-        case PORT_A:
-            LATA |= mask;
-            return;
-        case PORT_B:
-            LATB |= mask;
-            return;
-        case PORT_C:
-            LATB |= mask;
-            return;
-        default:
-            return;
+    uint16_t port = pin_get_port(pin);
+    uint16_t mask = 1u << pin_get_number(pin);
+    volatile uint16_t *target =lats[port];
+    if (port<port_max){
+       *target= *target | mask;
     }
 }
 
 void pin_clr(pin_name_t pin) {
-    port_name_t port = pin_get_port(pin);
-    uint16_t id = pin_get_number(pin);
-    uint16_t mask = 1u << id;
-
-    switch (port) {
-        case PORT_A:
-            LATA &= ~mask;
-            return;
-        case PORT_B:
-            LATB &= ~mask;
-            return;
-        case PORT_C:
-            LATB &= ~mask;
-            return;
-        default:
-            return;
+    uint16_t port = pin_get_port(pin);
+    uint16_t mask = 1u << pin_get_number(pin);
+    volatile uint16_t *target =lats[port];
+    if (port<port_max){
+       *target= *target &~mask;
     }
 }
 
@@ -100,6 +96,21 @@ void ppsi_assing(pin_name_t pin, ppsi_name_t ppsi) {
 
 void analog_assin(pin_name_t pin, bool flag) {
     if (pin_has_analog(pin)){
-        
+        uint16_t num = pin_get_analog(pin);
+        uint16_t mask = 1U<<num;
+        AD1PCFGL = flag ? AD1PCFGL|mask:AD1PCFGL&~mask;
     }
+}
+
+void pin_change(pin_name_t pin,bool sw){
+    if (!pin_has_change(pin))return;
+    uint16_t num = pin_get_change(pin);
+    volatile uint16_t * target = !(num&0x10)? &CNEN1:&CNEN2;
+    bits_write(target,num&0xf,sw);
+}
+void pin_pull_up(pin_name_t pin,bool sw){
+    if (!pin_has_change(pin))return;
+    uint16_t num = pin_get_change(pin);
+    volatile uint16_t * target = !(num&0x10)? &CNPU1:&CNPU2;
+    bits_write(target,num&0xf,sw);
 }

@@ -6,64 +6,72 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-//全てのPinの名前の定義
+//全てのPinの名前の定義(32bit)
 enum pin_name {
-    PIN_UNKNOWN = 0xFFFF, //エラー
+    PIN_UNKNOWN = 0xFFFFFF, //エラー
     //[0..3] ... pin number
-    PIN_MASK_NUMBER = 0x000f,
+    PIN_MASK_NUMBER = 0x00000f,
     //[4..5] ... port
-    PIN_MASK_PORT = 0x0030,
     PIN_SHIFT_PORT = 4,
+    PIN_MASK_PORT = 0x3L<<PIN_SHIFT_PORT,
     //[6..10] ...peripheral, not 31
-    PIN_MASK_SPECIAL = 0x07C0,
     PIN_SHIFT_SPECIAL = 6,
-    PIN_NORMAL = 31 << PIN_SHIFT_SPECIAL, //特に機能がないピン
-    //[12..15] ... analog , not 15
-    PIN_MASK_ANALOG = 0xF000,
-    PIN_SHIFT_ANALOG = 12,
-    PIN_DIGITAL = 15 << 12, //アナログピンではないピン
+    PIN_MASK_SPECIAL = 0x1F<<PIN_SHIFT_SPECIAL, 
+    PIN_NOT_SPECIAL = 0x1F << PIN_SHIFT_SPECIAL, //特に機能がないピン
+    //[11..15] ... cn , not 31
+    PIN_SHIFT_CHANGE = 11,
+    PIN_MASK_CHANGE = 0x1F<<PIN_SHIFT_CHANGE,
+    PIN_NOT_CHANGE = 0x1F<<PIN_SHIFT_CHANGE,
+    //[16..15] ... analog , not 15
+    PIN_SHIFT_ANALOG = 16,
+    PIN_MASK_ANALOG = 0x00F000,
+    PIN_NOT_ANALOG = 15L << 12, //アナログピンではないピン
     //1~22
-    PIN_HA = 0x19 | 9 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
-    PIN_HB = 0x26 | 22 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
-    PIN_HC = 0x27 | 23 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
-    PIN_OTW = 0x28 | 24 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
-    PIN_FALUT = 0x29 | 25 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
+    PIN_HA = 0x19L | 9L << PIN_SHIFT_SPECIAL| 21L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_HB = 0x26L | 22L << PIN_SHIFT_SPECIAL | 18L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_HC = 0x27L | 23L << PIN_SHIFT_SPECIAL | 17L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_OTW = 0x28L | 24L << PIN_SHIFT_SPECIAL | 20L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_FALUT = 0x29L | 25L << PIN_SHIFT_SPECIAL | 19L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
     //VSS
     //VCAP
-    PIN_PWM_C = 0x10 | 10 <<PIN_SHIFT_SPECIAL | PIN_DIGITAL,
-    PIN_RST_C = 0x11 | 11 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
-    PIN_PWM_B = 0x12 | 12 << PIN_SHIFT_SPECIAL| PIN_DIGITAL,
-    PIN_RST_B = 0x13 | 13 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
-    PIN_LED_A = 0x0A | PIN_NORMAL | PIN_DIGITAL,
-    PIN_LED_B = 0x07 | PIN_NORMAL | PIN_DIGITAL,
-    PIN_PWM_A = 0x1E | 14 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
-    PIN_RST_A = 0x1F | 15 << PIN_SHIFT_SPECIAL | PIN_DIGITAL,
+    PIN_PWM_C = 0x10L | 10L <<PIN_SHIFT_SPECIAL  |16L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_RST_C = 0x11L | 11L << PIN_SHIFT_SPECIAL |15L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_PWM_B = 0x12L | 12L << PIN_SHIFT_SPECIAL |14L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_RST_B = 0x13L | 13L << PIN_SHIFT_SPECIAL | 13L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_LED_A = 0x0AL | PIN_NOT_SPECIAL | PIN_NOT_CHANGE| PIN_NOT_ANALOG,
+    PIN_LED_B = 0x07L | PIN_NOT_SPECIAL | PIN_NOT_CHANGE| PIN_NOT_ANALOG,
+    PIN_PWM_A = 0x1EL | 14L << PIN_SHIFT_SPECIAL |12L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_RST_A = 0x1FL | 15L << PIN_SHIFT_SPECIAL |11L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
     //AVSS
     //ADDD
     //MCRL
-    PIN_VREF = 0x00 | PIN_NORMAL | 0 << PIN_SHIFT_ANALOG,
-    PIN_RESERVE = 0x01 | PIN_NORMAL | 1 << PIN_SHIFT_ANALOG,
-    PIN_PGD = 0x10 | 0 << PIN_SHIFT_SPECIAL | 2 << PIN_SHIFT_ANALOG,
-    PIN_PGC = 0x11 | 1 << PIN_SHIFT_SPECIAL | 3 << PIN_SHIFT_ANALOG,
+    PIN_VREF = 0x00L | PIN_NOT_SPECIAL |2L<<PIN_SHIFT_CHANGE| 0L << PIN_SHIFT_ANALOG,
+    PIN_RESERVE = 0x01L | PIN_NOT_SPECIAL | 3L<<PIN_SHIFT_CHANGE|1L << PIN_SHIFT_ANALOG,
+    PIN_PGD = 0x10L | 0L << PIN_SHIFT_SPECIAL | 4L<<PIN_SHIFT_CHANGE|2L << PIN_SHIFT_ANALOG,
+    PIN_PGC = 0x11L | 1L << PIN_SHIFT_SPECIAL |5L<<PIN_SHIFT_CHANGE| 3L << PIN_SHIFT_ANALOG,
     //23~44
-    PIN_VM = 0x12 | 2 << PIN_SHIFT_SPECIAL | 4 << PIN_SHIFT_ANALOG,
-    PIN_CA = 0x13 | 3 << PIN_SHIFT_SPECIAL | 5 << PIN_SHIFT_ANALOG,
-    PIN_CB = 0x20 | 16 << PIN_SHIFT_SPECIAL | 6 << PIN_SHIFT_ANALOG,
-    PIN_CC = 0x21 | 17 << PIN_SHIFT_SPECIAL | 7 << PIN_SHIFT_ANALOG,
-    PIN_RESERVE2 = 0x22 | 18<<PIN_SHIFT_SPECIAL|8 << PIN_SHIFT_ANALOG,
-    PIN_CLKIN = 0x02 | PIN_NORMAL| PIN_DIGITAL,
-    PIN_CLKOUT = 0x0 | PIN_NORMAL| PIN_DIGITAL,
-    PIN_LED_C = 0x08 | PIN_NORMAL| PIN_DIGITAL,
-    PIN_CS = 0x14 | 4 << PIN_SHIFT_SPECIAL| PIN_DIGITAL,
-    PIN_HALT = 0x04 | PIN_NORMAL| PIN_DIGITAL,
-    PIN_LED_D = 0x09 | PIN_NORMAL| PIN_DIGITAL,
-    PIN_MISO = 0x23 | 19 << PIN_SHIFT_SPECIAL| PIN_DIGITAL,
-    PIN_MOSI = 0x24 | 20 << PIN_SHIFT_SPECIAL| PIN_DIGITAL,
-    PIN_MCLK = 0x25 | 21 << PIN_SHIFT_SPECIAL| PIN_DIGITAL,
-    PIN_RX = 0x15 | 5 << PIN_SHIFT_SPECIAL| PIN_DIGITAL,
-    PIN_TX = 0x16 | 6 << PIN_SHIFT_SPECIAL| PIN_DIGITAL,
-    PIN_QEI_Y = 0x17 | 7 << PIN_SHIFT_SPECIAL| PIN_DIGITAL,
-    PIN_QEI_X = 0x18 | 8 << PIN_SHIFT_SPECIAL| PIN_DIGITAL
+    PIN_VM = 0x12L | 2L << PIN_SHIFT_SPECIAL | 6L<<PIN_SHIFT_CHANGE|4L << PIN_SHIFT_ANALOG,
+    PIN_CA = 0x13L | 3L << PIN_SHIFT_SPECIAL | 7L<<PIN_SHIFT_CHANGE|5L << PIN_SHIFT_ANALOG,
+    PIN_CB = 0x20L | 16L << PIN_SHIFT_SPECIAL |8L<<PIN_SHIFT_CHANGE| 6L << PIN_SHIFT_ANALOG,
+    PIN_CC = 0x21L | 17L << PIN_SHIFT_SPECIAL | 9L<<PIN_SHIFT_CHANGE|7L << PIN_SHIFT_ANALOG,
+    PIN_RESERVE2 = 0x22L | 18<<PIN_SHIFT_SPECIAL|10L<<PIN_SHIFT_CHANGE|8L << PIN_SHIFT_ANALOG,
+    //VDD
+    //VSS
+    PIN_CLKIN = 0x02L | PIN_NOT_SPECIAL|30L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_CLKOUT = 0x0L | PIN_NOT_SPECIAL|29L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_LED_C = 0x08L | PIN_NOT_SPECIAL| PIN_NOT_CHANGE| PIN_NOT_ANALOG,
+    PIN_CS    = 0x14L | 4L << PIN_SHIFT_SPECIAL| 1L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_HALT  = 0x04L | PIN_NOT_SPECIAL| 0L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_LED_D = 0x09L | PIN_NOT_SPECIAL| PIN_NOT_CHANGE| PIN_NOT_ANALOG,
+    PIN_MISO  = 0x23L | 19L << PIN_SHIFT_SPECIAL|28L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_MOSI  = 0x24L | 20L << PIN_SHIFT_SPECIAL|25L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_MCLK  = 0x25L | 21L << PIN_SHIFT_SPECIAL| 26L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    //VSS
+    //VDD
+    PIN_RX = 0x15L | 5L << PIN_SHIFT_SPECIAL|27L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_TX = 0x16L | 6L << PIN_SHIFT_SPECIAL|24L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_QEI_Y = 0x17L | 7L << PIN_SHIFT_SPECIAL|23L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_QEI_X = 0x18L | 8L << PIN_SHIFT_SPECIAL| 22L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG
 };
 typedef enum pin_name pin_name_t;
 
@@ -75,8 +83,14 @@ enum port_name {
 };
 typedef enum port_name port_name_t;
 
-//出力周辺機器IO
+//状態変化ピン
+/*enum cn_name{
+    
+};*/
 
+typedef enum cn_name cn_names;
+
+//出力周辺機器IO
 enum ppso_name {
     PPSO_NULL = 0b00000,
     PPSO_U1TX = 0b00011,
@@ -112,52 +126,66 @@ enum ppsi_name {
 };
 typedef enum ppsi_name ppsi_name_t;
 
-//methods
+//property
+static inline uint16_t pin_get_number(pin_name_t pin) {
+    return  pin & PIN_MASK_NUMBER;
+}
 
 static inline port_name_t pin_get_port(pin_name_t pin) {
-    return ((uint16_t) pin & (uint16_t)PIN_MASK_PORT) >> PIN_SHIFT_PORT;
+    return ( pin & PIN_MASK_PORT) >> PIN_SHIFT_PORT;
 }
 
-static inline uint16_t pin_get_number(pin_name_t pin) {
-    return (uint16_t) pin & (uint16_t)PIN_MASK_NUMBER;
-}
 //周辺機器ID
 static inline uint16_t pin_get_special(pin_name_t pin) {
-    return ((uint16_t) pin & (uint16_t)PIN_MASK_SPECIAL) >> PIN_SHIFT_SPECIAL;
+    return ( pin & PIN_MASK_SPECIAL) >> PIN_SHIFT_SPECIAL;
 }
 
-static inline uint16_t pin_has_special(pin_name_t pin){
-    return ((uint16_t) pin & (uint16_t)PIN_MASK_SPECIAL)!=(uint16_t)PIN_NORMAL;
+static inline bool pin_has_special(pin_name_t pin){
+    return ( pin & PIN_MASK_SPECIAL)!=PIN_NOT_SPECIAL;
+}
+
+//状態変化ピン
+static inline uint16_t pin_get_change(pin_name_t pin){
+    return (pin&PIN_MASK_CHANGE)>>PIN_SHIFT_CHANGE;
+}
+
+static inline bool pin_has_change(pin_name_t pin){
+    return (pin&PIN_MASK_CHANGE)==PIN_NOT_CHANGE;
 }
 
 //アナログID
 static inline uint16_t pin_get_analog(pin_name_t pin) {
-    return ((uint16_t) pin & (uint16_t)PIN_MASK_ANALOG) >> PIN_SHIFT_ANALOG;
+    return ( pin & PIN_MASK_ANALOG) >> PIN_SHIFT_ANALOG;
 }
 
-static inline uint16_t pin_has_analog(pin_name_t pin){
-    return ((uint16_t) pin & (uint16_t)PIN_MASK_ANALOG) !=PIN_DIGITAL;
+static inline bool pin_has_analog(pin_name_t pin){
+    return ( pin & PIN_MASK_ANALOG) !=PIN_NOT_ANALOG;
 }
 
 //basic pin function
 //入力ならtrue,出力ならfalse
 void pin_dir(pin_name_t, bool);
+void pin_drain(pin_name_t,bool);
 bool pin_read(pin_name_t);
+void pin_write(pin_name_t pin, bool out);
 void pin_set(pin_name_t);
 void pin_clr(pin_name_t);
-
-static inline void pin_write(pin_name_t pin, bool out) {
-    out ? pin_set(pin) : pin_clr(pin);
-}
 
 //出力先変更
 void ppso_assing(pin_name_t pin, ppso_name_t ppso);
 //入力先変更
 void ppsi_assing(pin_name_t pin, ppsi_name_t ppsi);
 //アナログ
-
 // flag...trueなら利用する。
 void analog_assing(pin_name_t pin, bool flag);
+
+//状態変化割り込みについて
+//true...割り込み有効
+void pin_change(pin_name_t,bool);
+
+//プルアップについて
+//true...抵抗を有効化
+void pin_pull_up(pin_name_t,bool);
 
 
 
