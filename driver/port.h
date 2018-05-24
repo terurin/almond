@@ -1,6 +1,7 @@
-/* 作成　川上　輝
+/* 作成 terurin
  * 用途　Portの管理
  */
+#pragma once
 #ifndef DRIVER_PORT_HEADER_GUARD
 #define DRIVER_PORT_HEADER_GUARD
 
