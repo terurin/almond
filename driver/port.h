@@ -84,13 +84,6 @@ enum port_name {
 };
 typedef enum port_name port_name_t;
 
-//状態変化ピン
-/*enum cn_name{
-    
-};*/
-
-typedef enum cn_name cn_names;
-
 //出力周辺機器IO
 enum ppso_name {
     PPSO_NULL = 0b00000,
@@ -173,12 +166,12 @@ void pin_set(pin_name_t);
 void pin_clr(pin_name_t);
 
 //出力先変更
-void ppso_assing(pin_name_t pin, ppso_name_t ppso);
+void ppso_assign(pin_name_t pin, ppso_name_t ppso);
 //入力先変更
-void ppsi_assing(pin_name_t pin, ppsi_name_t ppsi);
+void ppsi_assign(pin_name_t pin, ppsi_name_t ppsi);
 //アナログ
 // flag...trueなら利用する。
-void analog_assing(pin_name_t pin, bool flag);
+void analog_assign(pin_name_t pin, bool flag);
 
 //状態変化割り込みについて
 //true...割り込み有効
@@ -188,6 +181,25 @@ void pin_change(pin_name_t,bool);
 //true...抵抗を有効化
 void pin_pull_up(pin_name_t,bool);
 
+//デジタル出力として設定する
+static inline void pin_dout(pin_name_t pin){
+    pin_dir(pin,false);
+    analog_assign(pin,false);
+    pin_write(pin,true);
+}
+
+//デジタル入力として設定する。
+static inline void pin_din(pin_name_t pin){
+    pin_dir(pin,true);
+    analog_assign(pin,false);
+    pin_pull_up(pin,true);
+}
+
+//アナログ入力として設定する
+static inline void pin_ain(pin_name_t pin){
+    pin_dir(pin,true);
+    analog_assign(pin,true);
+}
 
 
 #endif

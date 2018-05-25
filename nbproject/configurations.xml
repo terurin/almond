@@ -33,6 +33,8 @@
         <itemPath>driver/uart.c</itemPath>
         <itemPath>driver/config.c</itemPath>
         <itemPath>util/ring.c</itemPath>
+        <itemPath>driver/clock.c</itemPath>
+        <itemPath>driver/clock.h</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
       </logicalFolder>
@@ -60,7 +62,7 @@
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.34</languageToolchainVersion>
-        <platform>2</platform>
+        <platform>3</platform>
       </toolsSet>
       <compileType>
         <linkerTool>

@@ -1,6 +1,7 @@
 #include "uart.h"
 #include <p33Fxxxx.h>
 #include <util/ring.h>
+#include "port.h"
 //領域設定用定数
 #define TX_BUFFER_SIZE_LOG2 (6)
 #define RX_BUFFER_SIZE_LOG2 (6)
@@ -13,6 +14,17 @@ static uint8_t rx_buf [RX_BUFFER_SIZE];
 static ring2_t rx_ring;
 
 void uart_init(){
+    //管理領域初期化
     ring2_init(&tx_ring,tx_buf,TX_BUFFER_SIZE_LOG2);
     ring2_init(&rx_ring,rx_buf,RX_BUFFER_SIZE_LOG2);
+
+    //接続
+    pin_dout(PIN_TX);
+    ppso_assign(PIN_TX,PPSO_U1TX);
+    pin_din(PIN_RX);
+    ppsi_assign(PIN_RX,PPSI_U1RX);
+    
+    //
+    
+    
 }

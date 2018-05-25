@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/uart.c driver/config.c util/ring.c
+SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/uart.c driver/config.c util/ring.c driver/clock.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/util/ring.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/util/ring.o.d ${OBJECTDIR}/driver/clock.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o
+OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o
 
 # Source Files
-SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/uart.c driver/config.c util/ring.c
+SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/uart.c driver/config.c util/ring.c driver/clock.c
 
 
 CFLAGS=
@@ -136,6 +136,13 @@ ${OBJECTDIR}/util/ring.o: util/ring.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  util/ring.c  -o ${OBJECTDIR}/util/ring.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/util/ring.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O1 -I"." -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/util/ring.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/driver/clock.o: driver/clock.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/driver" 
+	@${RM} ${OBJECTDIR}/driver/clock.o.d 
+	@${RM} ${OBJECTDIR}/driver/clock.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/clock.c  -o ${OBJECTDIR}/driver/clock.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/clock.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O1 -I"." -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/driver/clock.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/app/main.o: app/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/app" 
@@ -178,6 +185,13 @@ ${OBJECTDIR}/util/ring.o: util/ring.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/util/ring.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  util/ring.c  -o ${OBJECTDIR}/util/ring.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/util/ring.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O1 -I"." -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/util/ring.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/driver/clock.o: driver/clock.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/driver" 
+	@${RM} ${OBJECTDIR}/driver/clock.o.d 
+	@${RM} ${OBJECTDIR}/driver/clock.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/clock.c  -o ${OBJECTDIR}/driver/clock.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/clock.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O1 -I"." -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/driver/clock.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

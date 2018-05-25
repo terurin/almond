@@ -74,7 +74,7 @@ void pin_clr(pin_name_t pin) {
     }
 }
 
-void ppso_assing(pin_name_t pin, ppso_name_t ppso) {
+void ppso_assign(pin_name_t pin, ppso_name_t ppso) {
     if (pin_has_special(pin)) {
         uint16_t pid = pin_get_special(pin);
         uint8_t* RPRn = (uint8_t*) & RPOR0; //起点を取得
@@ -84,7 +84,7 @@ void ppso_assing(pin_name_t pin, ppso_name_t ppso) {
     }
 }
 
-void ppsi_assing(pin_name_t pin, ppsi_name_t ppsi) {
+void ppsi_assign(pin_name_t pin, ppsi_name_t ppsi) {
     if (pin_has_special(pin)) {
         uint8_t* RPRn = (uint8_t*) & RPINR0;
         uint16_t idx = (uint16_t) ppsi;
