@@ -58,10 +58,7 @@ static inline void  ring2_clean(ring2_t *obj){
 //書き込み
 void ring2_putc(ring2_t* obj,uint8_t);
 const uint8_t* ring2_write(ring2_t* obj,const uint8_t* ,size_t);
-
-static inline const char* ring2_puts(ring2_t* obj,const char* str){
-    return (const char*)ring2_write(obj,(const uint8_t*)str,strlen(str));
-}
+const char* ring2_puts(ring2_t* obj,const char* str);
 
 uint8_t ring2_getc(ring2_t* obj);
 uint8_t* ring2_read(ring2_t* obj,uint8_t* ,size_t);

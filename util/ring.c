@@ -64,6 +64,12 @@ const uint8_t* ring2_write(ring2_t* obj,const uint8_t* mem,size_t sz){
     }
 }
 
+const char* ring2_puts(ring2_t* obj,const char* str){
+    const char * result=ring2_write(obj,(const uint8_t*)str,strlen(str));
+    ring2_putc(newline);
+    return result;
+}
+
 uint8_t* ring2_read(ring2_t* obj,uint8_t* mem,size_t sz){
     if (obj==NULL)return NULL;
     bool readable = ring2_used(obj)-sz>0;
