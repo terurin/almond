@@ -58,11 +58,12 @@ static inline void  ring2_clean(ring2_t *obj){
     if (obj!=NULL)obj->used = obj->in=obj->out=0;
 }
 //書き込み
-void ring2_putc(ring2_t* obj,uint8_t);
+char ring2_putc(ring2_t* obj,char);
 const uint8_t* ring2_write(ring2_t* obj,const uint8_t* ,size_t);
 const char* ring2_puts(ring2_t* obj,const char* str);
+const char* ring2_putl(ring2_t* obj,const char* str);
 //読み込み
-uint8_t ring2_getc(ring2_t* obj);
+char ring2_getc(ring2_t* obj);
 uint8_t* ring2_read(ring2_t* obj,uint8_t* ,size_t);
 char* ring2_gets(ring2_t* obj,char *mem,size_t);//改行文字があるなら読み込み
 

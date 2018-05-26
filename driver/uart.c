@@ -22,12 +22,12 @@ static const uint16_t tx_ip = 3;
 static const uint16_t rx_ip = 2;
 
 //送信する必要があるか?
-static inline bool sentable() {
+static inline bool sendable() {
     return ring2_used(&tx_ring)<(TX_BUFFER_SIZE * TX_BUFFER_LIMIT);
 }
+static void flush();
 
 void uart_init() {
-    
     //各種定数
     const U1MODEBITS mode = {
         .UARTEN = true, //module enable
@@ -55,7 +55,7 @@ void uart_init() {
 #if HIGH_SPEED == true
     const uint16_t brg = FCY / (16 * BAUD) - 1;
 #else
-    const uint16_t brg = FCY / (16 * BAUD) - 1;
+    const uint16_t brg = FCY / (4 * BAUD) - 1;
 #endif
     
     //管理領域初期化
@@ -78,6 +78,72 @@ void uart_init() {
     IEC0bits.U1TXIE = IEC0bits.U1RXIE =false;//割り込み無効化
     IFS0bits.U1TXIF = IFS0bits.U1RXIF =false;//割り込みフラグ解除
     IPC3bits.U1TXIP =tx_ip,IPC2bits.U1RXIP = rx_ip;//割り込み優先度設定
-    IEC0bits.U1TXIE = IEC0bits.U1RXIE =true;//割り込み有効化
+    IEC0bits.U1TXIE =false, IEC0bits.U1RXIE =true;//割り込み有効化
 }
 
+char uart_putc(char c){
+    char result=ring2_putc(&tx_ring,c);
+    if (sendable())flush();
+    return result;
+}
+
+const uint8_t* uart_write(const uint8_t* byte,size_t size){
+    const uint8_t* result=ring2_write(&tx_ring,byte,size);
+    if (sendable())flush();
+    return result;
+}
+
+const char* uart_puts(const char* str){
+    const char* result=ring2_puts(&tx_ring,str);
+    if (sendable())flush();
+    return result;
+}
+
+bool uart_empty(){
+    return ring2_empty(&rx_ring);
+}
+
+char uart_getc(){
+    return ring2_getc(&rx_ring);
+}
+
+uint8_t* uart_read(uint8_t* byte,size_t size){
+    return ring2_read(&rx_ring,byte,size);
+}
+
+char* uart_gets(char* str,size_t size){
+    return ring2_gets(&rx_ring,str,size);
+}
+
+void uart_flush(){
+    flush();
+}
+
+static void flush(){
+    bool necessary = (!IEC0bits.U1TXIE)&& //Hardware FIFO
+            (!ring2_empty(&tx_ring));//Software FIFO
+    if (necessary){
+        while (!U1STAbits.UTXBF&&!ring2_empty(&tx_ring)){
+            U1TXREG=ring2_getc(&tx_ring);
+        }
+        IEC0bits.U1TXIE=true;
+    }
+}
+
+void _ISR _U1RXInterrupt(){
+    do {
+        if (!ring2_full(&rx_ring)){
+            ring2_putc(&rx_ring,U1RXREG);
+        }
+    }while (U1STAbits.URXDA);
+    IFS0bits.U1RXIF=false;
+}
+
+void _ISR _U1TXInterrupt(){
+    while (!ring2_empty(&tx_ring)&& U1STAbits.UTXBF == false) {
+        U1TXREG=ring2_getc(&tx_ring);
+    }
+
+    IEC0bits.U1TXIE = !ring2_empty(&tx_ring);
+    IFS0bits.U1TXIF = false;
+}

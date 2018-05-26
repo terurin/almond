@@ -14,9 +14,14 @@
 void uart_init();
 
 char uart_putc(char);
+const uint8_t* uart_write(const uint8_t*,size_t);
 const char* uart_puts(const char*);
+
+bool uart_empty();
 char uart_getc();
+uint8_t* uart_read(uint8_t*,size_t);
 char* uart_gets(char*,size_t);
+
 void uart_flush();
 
 
