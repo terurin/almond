@@ -94,7 +94,7 @@ void ppsi_assign(pin_name_t pin, ppsi_name_t ppsi) {
     }
 }
 
-void analog_assin(pin_name_t pin, bool flag) {
+void analog_assign(pin_name_t pin, bool flag) {
     if (pin_has_analog(pin)){
         uint16_t num = pin_get_analog(pin);
         uint16_t mask = 1U<<num;

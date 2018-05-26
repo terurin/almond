@@ -50,7 +50,7 @@ static inline uint8_t ring2_at(const ring2_t *obj,uint16_t pos){
 
 uint16_t ring2_find(const ring2_t *obj,char c);
 static inline bool ring2_exist(const ring2_t* obj,char c){
-    return ring2_find(obj,c)<ring2_used();
+    return ring2_find(obj,c)<ring2_used(obj);
 }
 
 //削除

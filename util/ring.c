@@ -65,8 +65,8 @@ const uint8_t* ring2_write(ring2_t* obj,const uint8_t* mem,size_t sz){
 }
 
 const char* ring2_puts(ring2_t* obj,const char* str){
-    const char * result=ring2_write(obj,(const uint8_t*)str,strlen(str));
-    ring2_putc(newline);
+    const char * result=(const char*)ring2_write(obj,(const uint8_t*)str,strlen(str));
+    ring2_putc(obj,newline);
     return result;
 }
 
