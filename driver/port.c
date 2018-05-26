@@ -4,7 +4,7 @@
 
 static const size_t port_max = 3;
 //PORT周り
-static volatile uint16_t *const trises[]={&PORTA,&PORTB,&PORTC};
+static volatile uint16_t *const trises[]={&TRISA,&TRISB,&TRISC};
 static volatile uint16_t *const odcs[]={&ODCA,&ODCB,&ODCC};
 static volatile uint16_t *const  ports[]={&PORTA,&PORTB,&PORTC};
 static volatile uint16_t *const lats[]={&LATA,&LATB,&LATC};

@@ -18,7 +18,7 @@ static inline pin_name_t cast(led_name_t led){
 void led_init(){
     uint16_t idx;
     for (idx=0;idx<led_size;idx++){
-        pin_name_t pin = cast(led_list[idx]);
+        pin_name_t pin = cast(idx);
         pin_direction(pin,false);
         analog_assign(pin,false);
         pin_clear(pin);
