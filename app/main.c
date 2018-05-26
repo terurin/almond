@@ -4,6 +4,7 @@ int main(void) {
     
     led_init();
     led_on(LED_A);
+    led_on(LED_B);
     for(;;);
 
 

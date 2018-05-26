@@ -13,8 +13,6 @@
 
 void uart_init();
 
-
-
 char uart_putc(char);
 const char* uart_puts(const char*);
 char uart_getc();
