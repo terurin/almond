@@ -18,7 +18,7 @@ static inline void bits_write(volatile uint16_t* target,uint16_t mask,bool value
     }
 }
 
-void pin_dir(pin_name_t pin, bool flag) {
+void pin_direction(pin_name_t pin, bool flag) {
     uint16_t port = pin_get_port(pin);
     uint16_t mask = 1u << pin_get_number(pin);
     volatile uint16_t *target = trises[port];
@@ -65,7 +65,7 @@ void pin_set(pin_name_t pin) {
     }
 }
 
-void pin_clr(pin_name_t pin) {
+void pin_clear(pin_name_t pin) {
     uint16_t port = pin_get_port(pin);
     uint16_t mask = 1u << pin_get_number(pin);
     volatile uint16_t *target =lats[port];

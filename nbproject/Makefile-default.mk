@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/config.c util/ring.c driver/clock.c driver/uart.c
+SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/config.c util/ring.c driver/clock.c driver/uart.c mid/led.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/util/ring.o.d ${OBJECTDIR}/driver/clock.o.d ${OBJECTDIR}/driver/uart.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/mid/led.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/util/ring.o.d ${OBJECTDIR}/driver/clock.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/mid/led.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o
+OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/mid/led.o
 
 # Source Files
-SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/config.c util/ring.c driver/clock.c driver/uart.c
+SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/config.c util/ring.c driver/clock.c driver/uart.c mid/led.c
 
 
 CFLAGS=
@@ -143,6 +143,13 @@ ${OBJECTDIR}/driver/uart.o: driver/uart.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/uart.c  -o ${OBJECTDIR}/driver/uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/uart.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O1 -I"." -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/driver/uart.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/mid/led.o: mid/led.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/mid" 
+	@${RM} ${OBJECTDIR}/mid/led.o.d 
+	@${RM} ${OBJECTDIR}/mid/led.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/led.c  -o ${OBJECTDIR}/mid/led.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/led.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O1 -I"." -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/mid/led.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/app/main.o: app/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/app" 
@@ -192,6 +199,13 @@ ${OBJECTDIR}/driver/uart.o: driver/uart.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/driver/uart.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/uart.c  -o ${OBJECTDIR}/driver/uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/uart.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O1 -I"." -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/driver/uart.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/mid/led.o: mid/led.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/mid" 
+	@${RM} ${OBJECTDIR}/mid/led.o.d 
+	@${RM} ${OBJECTDIR}/mid/led.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/led.c  -o ${OBJECTDIR}/mid/led.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/led.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O1 -I"." -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/mid/led.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

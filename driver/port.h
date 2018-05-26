@@ -158,12 +158,12 @@ static inline bool pin_has_analog(pin_name_t pin){
 
 //basic pin function
 //入力ならtrue,出力ならfalse
-void pin_dir(pin_name_t, bool);
+void pin_direction(pin_name_t, bool);
 void pin_drain(pin_name_t,bool);
 bool pin_read(pin_name_t);
 void pin_write(pin_name_t pin, bool out);
 void pin_set(pin_name_t);
-void pin_clr(pin_name_t);
+void pin_clear(pin_name_t);
 
 //出力先変更
 void ppso_assign(pin_name_t pin, ppso_name_t ppso);
@@ -183,21 +183,21 @@ void pin_pull_up(pin_name_t,bool);
 
 //デジタル出力として設定する
 static inline void pin_dout(pin_name_t pin){
-    pin_dir(pin,false);
+    pin_direction(pin,false);
     analog_assign(pin,false);
     pin_write(pin,true);
 }
 
 //デジタル入力として設定する。
 static inline void pin_din(pin_name_t pin){
-    pin_dir(pin,true);
+    pin_direction(pin,true);
     analog_assign(pin,false);
     pin_pull_up(pin,true);
 }
 
 //アナログ入力として設定する
 static inline void pin_ain(pin_name_t pin){
-    pin_dir(pin,true);
+    pin_direction(pin,true);
     analog_assign(pin,true);
 }
 
