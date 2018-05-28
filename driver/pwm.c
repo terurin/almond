@@ -17,8 +17,8 @@
 //各種設定
 #define KHZ (1000)
 static const uint32_t cycle = (10.0f * KHZ);
-static uint16_t period=0;//制御周期
-static fractional duty_min = Q15(0.1);//duty比の下限(安全対策)
+static uint16_t period = 0; //制御周期
+static fractional duty_min = Q15(0.1); //duty比の下限(安全対策)
 #define UP_DOWN (false) //PWMの動作モード　アップダウンならtrue,フリーランならfalse
 
 //すべてのHBを開放する
@@ -35,7 +35,7 @@ static const P1OVDCONBITS ov_free = {
 };
 
 //すべてのHBを用いてブレーキをかける。
-static const P1OVDCONBITS ov_lock ={
+static const P1OVDCONBITS ov_lock = {
     //PWM1
     .POVD1H = false, .POVD1L = false, //use pwm module outputs?
     .POUT1H = false, .POUT1L = false, //manual output
@@ -128,17 +128,19 @@ static const P1OVDCONBITS ov_table[] = {
 };
 
 //周期レジスタの値を計算する
+
 static inline uint16_t period_free() {
     return (clock_fcy() / (cycle)) - 1;
 }
 
 static inline uint16_t period_up_down() {
-    return (uint16_t)(clock_fcy() / (cycle * 2) - 1);
+    return (uint16_t) (clock_fcy() / (cycle * 2) - 1);
 }
 
 //なぜか見つからなかったので定義
-static inline fractional fract_max(fractional a,fractional b){
-    return a>b?a:b;
+
+static inline fractional fract_max(fractional a, fractional b) {
+    return a > b ? a : b;
 }
 
 void pwm_init() {
@@ -198,9 +200,9 @@ void pwm_init() {
     P1OVDCONbits = ov_free;
     //カウンタを初期化する
 #if UP_DOWN ==true
-    period=PTPER = period_up_down();
+    period = PTPER = period_up_down();
 #else
-    period=PTPER = period_free();
+    period = PTPER = period_free();
 #endif
     PTMR = 0;
     pwm_duty_raw(0);
@@ -216,51 +218,74 @@ uint32_t pwm_cycle() {
     return cycle;
 }
 
-uint16_t pwm_period(){
+uint16_t pwm_period() {
     return period;
 }
 
-
-void pwm_state(pwm_state_name_t state){
+void pwm_state(pwm_state_name_t state) {
     P1OVDCONBITS mode;
     //定数テーブルから引く
-    if (state < PWM_STATE_END){
+    if (state < PWM_STATE_END) {
         mode = ov_table[state];
-    }else if (state == PWM_STATE_LOCK){
+    } else if (state == PWM_STATE_LOCK) {
         mode = ov_lock;
-    }else {
+    } else {
         mode = ov_free;
     }
     //書き込み
     P1OVDCONbits = mode;
 }
 
-
-void pwm_duty_raw(uint16_t duty){
-    P1DC1=P1DC2=P1DC3 =duty;
+void pwm_duty_raw(uint16_t duty) {
+    P1DC1 = P1DC2 = P1DC3 = duty;
 }
 
-
-void pwm_duty(fractional rate){
-    if (rate >duty_min){
-        uint16_t duty=((uint32_t)period*rate)>>14;
+void pwm_duty(fractional rate) {
+    if (rate > duty_min) {
+        uint16_t duty = ((uint32_t) period * rate) >> 14;
         pwm_duty_raw(duty);
-    }else{
+    } else {
         //stop motor because duty is too few
         pwm_duty_raw(0);
     }
 }
 
+pwm_state_name_t pwm_state_front(pwm_state_name_t state) {
+    if (state < PWM_STATE_END) {
+        if (state != PWM_STATE_CB) {
+            return state + 1;
+        } else {
+            return PWM_STATE_AB;
+        }
+    } else {
+        return state;
+    }
+}
 
+pwm_state_name_t pwm_state_back(pwm_state_name_t state) {
+    if (state < PWM_STATE_END) {
+        if (state != PWM_STATE_AB) {
+            return state - 1;
+        } else {
+            return PWM_STATE_CB;
+        }
+    } else {
+        return state;
+    }
+
+}
+pwm_state_name_t pwm_state_hold(pwm_state_name_t state){
+    return state;
+}
 
 void __attribute__((interrupt, no_auto_psv)) _MPWM1Interrupt() {
     //TODO 後で書く
-    static int idx=0;
-    if (idx==0x7){
-    static int cnt=0;
-    pwm_state(cnt);
-    cnt=(cnt+1)%6;
+    static int idx = 0;
+    if (idx == 0x7) {
+        static int cnt = 0;
+        pwm_state(cnt);
+        cnt = (cnt + 1) % 6;
     }
-    idx=(idx+1)&0x7;
+    idx = (idx + 1)&0x7;
     IFS3bits.PWM1IF = false;
 }

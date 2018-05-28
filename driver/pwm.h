@@ -35,7 +35,7 @@ void pwm_state(pwm_state_name_t);
 void pwm_duty_raw(uint16_t);
 void pwm_duty(fractional); //(Q0.15 Format)
 
-
-
-
+pwm_state_name_t pwm_state_front(pwm_state_name_t);
+pwm_state_name_t pwm_state_back(pwm_state_name_t);
+pwm_state_name_t pwm_state_hold(pwm_state_name_t x);
 #endif
