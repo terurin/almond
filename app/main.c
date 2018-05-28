@@ -3,9 +3,15 @@
 
 #include "driver/driver.h"
 #include "driver/pwm.h"
+
+void test(void* obj){
+    led_toggle(LED_A);
+}
+
 int main(void) {
     driver_init();
     pwm_duty(Q15(0.9));
+    pwm_event(&test,NULL);
     for(;;);
 
 

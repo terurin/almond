@@ -201,5 +201,7 @@ static inline void pin_ain(pin_name_t pin){
     analog_assign(pin,true);
 }
 
+//割り込み登録
+
 
 #endif

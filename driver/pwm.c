@@ -20,6 +20,9 @@ static const uint32_t cycle = (10.0f * KHZ);
 static uint16_t period = 0; //制御周期
 static fractional duty_min = Q15(0.1); //duty比の下限(安全対策)
 #define UP_DOWN (false) //PWMの動作モード　アップダウンならtrue,フリーランならfalse
+//割り込み　コールバック用
+static pwm_handler_t* callback_handler;
+static void *callback_object;
 
 //すべてのHBを開放する
 static const P1OVDCONBITS ov_free = {
@@ -209,7 +212,7 @@ void pwm_init() {
     //割り込みを許可する
     IFS3bits.PWM1IF = false;
     IPC14bits.PWM1IP = 6; //割り込み優先度(up to 7)
-    IEC3bits.PWM1IE = true;
+    IEC3bits.PWM1IE = false;
     //起動
     PTCONbits.PTEN = true;
 }
@@ -278,14 +281,15 @@ pwm_state_name_t pwm_state_hold(pwm_state_name_t state){
     return state;
 }
 
+void pwm_event(pwm_handler_t hwnd,void* obj){
+    callback_handler=hwnd;
+    callback_object=obj;
+    IEC3bits.PWM1IE = hwnd!=NULL;
+}
+
 void __attribute__((interrupt, no_auto_psv)) _MPWM1Interrupt() {
-    //TODO 後で書く
-    static int idx = 0;
-    if (idx == 0x7) {
-        static int cnt = 0;
-        pwm_state(cnt);
-        cnt = (cnt + 1) % 6;
+    if (callback_handler!=NULL){
+        callback_handler(callback_object);
     }
-    idx = (idx + 1)&0x7;
     IFS3bits.PWM1IF = false;
 }

@@ -38,4 +38,7 @@ void pwm_duty(fractional); //(Q0.15 Format)
 pwm_state_name_t pwm_state_front(pwm_state_name_t);
 pwm_state_name_t pwm_state_back(pwm_state_name_t);
 pwm_state_name_t pwm_state_hold(pwm_state_name_t x);
+
+typedef void (pwm_handler_t(void*));
+void pwm_event(pwm_handler_t,void*);//割り込みに関数ポインタを登録
 #endif

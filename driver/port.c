@@ -114,3 +114,5 @@ void pin_pull_up(pin_name_t pin,bool sw){
     volatile uint16_t * target = !(num&0x10)? &CNPU1:&CNPU2;
     bits_write(target,num&0xf,sw);
 }
+
+
