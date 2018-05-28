@@ -1,6 +1,7 @@
 #include "uart.h"
 #include <p33Fxxxx.h>
 #include <util/ring.h>
+#include "clock.h"
 #include "port.h"
 //領域設定用定数
 #define TX_BUFFER_SIZE_LOG2 (6)
@@ -8,7 +9,6 @@
 #define TX_BUFFER_SIZE  (1UL<<TX_BUFFER_SIZE_LOG2)
 #define TX_BUFFER_LIMIT (0.30) //送信する必要があるとする割合
 #define RX_BUFFER_SIZE ((1UL)<<RX_BUFFER_SIZE_LOG2)
-#define FCY (40000000)
 #define BAUD (115200) //転送速度
 #define HIGH_SPEED (false) //高速伝送の有無
 
@@ -53,9 +53,9 @@ void uart_init() {
     };
 
 #if HIGH_SPEED == true
-    const uint16_t brg = FCY / (16 * BAUD) - 1;
+    const uint16_t brg = clock_fcy() / (16UL * BAUD) - 1;
 #else
-    const uint16_t brg = FCY / (4 * BAUD) - 1;
+    const uint16_t brg = clock_fcy() / (4UL * BAUD) - 1;
 #endif
     
     //管理領域初期化

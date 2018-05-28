@@ -1,6 +1,10 @@
 #include "clock.h"
 #include <p33Fxxxx.h>
 
+#define MHZ (1000000)
+#define FCY_DEFALUT (7.37*MHZ)
+static uint32_t fcy = FCY_DEFALUT;
+
 void clock_init() {
     //内部クロックを初期化する
 
@@ -17,6 +21,10 @@ void clock_init() {
     while (OSCCONbits.LOCK != 1) {
     };
 
+    
 
+}
 
+uint32_t clock_fcy(){
+    return fcy;
 }
