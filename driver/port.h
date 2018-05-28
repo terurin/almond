@@ -202,6 +202,8 @@ static inline void pin_ain(pin_name_t pin){
 }
 
 //割り込み登録
-
+typedef void(change_handle_t)(void*);
+void change_init();
+void change_event(change_handle_t,void*);
 
 #endif

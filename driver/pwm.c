@@ -21,8 +21,8 @@ static uint16_t period = 0; //制御周期
 static fractional duty_min = Q15(0.1); //duty比の下限(安全対策)
 #define UP_DOWN (false) //PWMの動作モード　アップダウンならtrue,フリーランならfalse
 //割り込み　コールバック用
-static pwm_handler_t* callback_handler;
-static void *callback_object;
+static pwm_handler_t* callback_handler=NULL;
+static void *callback_object=NULL;
 
 //すべてのHBを開放する
 static const P1OVDCONBITS ov_free = {
@@ -284,6 +284,7 @@ pwm_state_name_t pwm_state_hold(pwm_state_name_t state){
 void pwm_event(pwm_handler_t hwnd,void* obj){
     callback_handler=hwnd;
     callback_object=obj;
+    IFS3bits.PWM1IF = false;
     IEC3bits.PWM1IE = hwnd!=NULL;
 }
 

@@ -4,17 +4,22 @@
 
 static const size_t port_max = 3;
 //PORT周り
-static volatile uint16_t *const trises[]={&TRISA,&TRISB,&TRISC};
-static volatile uint16_t *const odcs[]={&ODCA,&ODCB,&ODCC};
-static volatile uint16_t *const  ports[]={&PORTA,&PORTB,&PORTC};
-static volatile uint16_t *const lats[]={&LATA,&LATB,&LATC};
+static volatile uint16_t * const trises[] = {&TRISA, &TRISB, &TRISC};
+static volatile uint16_t * const odcs[] = {&ODCA, &ODCB, &ODCC};
+static volatile uint16_t * const ports[] = {&PORTA, &PORTB, &PORTC};
+static volatile uint16_t * const lats[] = {&LATA, &LATB, &LATC};
+
+//状態変化割り込み
+static change_handle_t* callback_handle = NULL;
+static void* callback_object = NULL;
 
 //bit operation
-static inline void bits_write(volatile uint16_t* target,uint16_t mask,bool value){
-    if (value){
-        *target |=mask;
-    }else{
-        *target &=~mask;
+
+static inline void bits_write(volatile uint16_t* target, uint16_t mask, bool value) {
+    if (value) {
+        *target |= mask;
+    } else {
+        *target &= ~mask;
     }
 }
 
@@ -22,55 +27,55 @@ void pin_direction(pin_name_t pin, bool flag) {
     uint16_t port = pin_get_port(pin);
     uint16_t mask = 1u << pin_get_number(pin);
     volatile uint16_t *target = trises[port];
-    if (port<port_max){
-        bits_write(target,mask,flag);
+    if (port < port_max) {
+        bits_write(target, mask, flag);
     }
 }
 
-void pin_drain(pin_name_t pin,bool flag){
+void pin_drain(pin_name_t pin, bool flag) {
     uint16_t port = pin_get_port(pin);
     uint16_t mask = 1u << pin_get_number(pin);
-    volatile uint16_t *target =odcs[port];
-    if (port<port_max){
-       bits_write(target,mask,flag);
+    volatile uint16_t *target = odcs[port];
+    if (port < port_max) {
+        bits_write(target, mask, flag);
     }
 }
 
 bool pin_read(pin_name_t pin) {
     uint16_t port = pin_get_port(pin);
     uint16_t mask = 1u << pin_get_number(pin);
-    volatile uint16_t *target =odcs[port];
-    if (port<port_max){
+    volatile uint16_t *target = odcs[port];
+    if (port < port_max) {
         return *target&mask;
-    }else{
+    } else {
         return false;
     }
 }
 
-void pin_write(pin_name_t pin,bool flag) {
+void pin_write(pin_name_t pin, bool flag) {
     uint16_t port = pin_get_port(pin);
     uint16_t mask = 1u << pin_get_number(pin);
-    volatile uint16_t *target =lats[port];
-    if (port<port_max){
-      bits_write(target,mask,flag);
+    volatile uint16_t *target = lats[port];
+    if (port < port_max) {
+        bits_write(target, mask, flag);
     }
 }
 
 void pin_set(pin_name_t pin) {
     uint16_t port = pin_get_port(pin);
     uint16_t mask = 1u << pin_get_number(pin);
-    volatile uint16_t *target =lats[port];
-    if (port<port_max){
-       *target= *target | mask;
+    volatile uint16_t *target = lats[port];
+    if (port < port_max) {
+        *target = *target | mask;
     }
 }
 
 void pin_clear(pin_name_t pin) {
     uint16_t port = pin_get_port(pin);
     uint16_t mask = 1u << pin_get_number(pin);
-    volatile uint16_t *target =lats[port];
-    if (port<port_max){
-       *target= *target &~mask;
+    volatile uint16_t *target = lats[port];
+    if (port < port_max) {
+        *target = *target &~mask;
     }
 }
 
@@ -95,24 +100,45 @@ void ppsi_assign(pin_name_t pin, ppsi_name_t ppsi) {
 }
 
 void analog_assign(pin_name_t pin, bool flag) {
-    if (pin_has_analog(pin)){
+    if (pin_has_analog(pin)) {
         uint16_t num = pin_get_analog(pin);
-        uint16_t mask = 1U<<num;
-        AD1PCFGL = flag ? AD1PCFGL|mask:AD1PCFGL&~mask;
+        uint16_t mask = 1U << num;
+        AD1PCFGL = flag ? AD1PCFGL | mask : AD1PCFGL&~mask;
     }
 }
 
-void pin_change(pin_name_t pin,bool sw){
+void pin_change(pin_name_t pin, bool sw) {
     if (!pin_has_change(pin))return;
     uint16_t num = pin_get_change(pin);
-    volatile uint16_t * target = !(num&0x10)? &CNEN1:&CNEN2;
-    bits_write(target,num&0xf,sw);
+    volatile uint16_t * target = !(num & 0x10) ? &CNEN1 : &CNEN2;
+    bits_write(target, num & 0xf, sw);
 }
-void pin_pull_up(pin_name_t pin,bool sw){
+
+void pin_pull_up(pin_name_t pin, bool sw) {
     if (!pin_has_change(pin))return;
     uint16_t num = pin_get_change(pin);
-    volatile uint16_t * target = !(num&0x10)? &CNPU1:&CNPU2;
-    bits_write(target,num&0xf,sw);
+    volatile uint16_t * target = !(num & 0x10) ? &CNPU1 : &CNPU2;
+    bits_write(target, num & 0xf, sw);
 }
 
+void change_init() {
+    callback_handle = NULL;
+    callback_object = NULL;
+    IFS1bits.CNIF = false;
+    IEC1bits.CNIE = false;
+    IPC4bits.CNIP =6; //割り込み優先度
+}
 
+void change_event(change_handle_t hwnd, void* obj) {
+    callback_handle = hwnd;
+    callback_object = obj;
+    IFS1bits.CNIF = false;
+    IEC1bits.CNIE = hwnd != NULL;
+}
+
+void __attribute__((interrupt, no_auto_psv)) _CNInterrupt(){
+    if (callback_handle!=NULL){
+        callback_handle(callback_object);
+    }
+    IFS1bits.CNIF = false;
+}

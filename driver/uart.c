@@ -130,7 +130,7 @@ static void flush(){
     }
 }
 
-void _ISR _U1RXInterrupt(){
+void __attribute__((interrupt, auto_psv)) _U1RXInterrupt(){
     do {
         if (!ring2_full(&rx_ring)){
             ring2_putc(&rx_ring,U1RXREG);
@@ -139,7 +139,7 @@ void _ISR _U1RXInterrupt(){
     IFS0bits.U1RXIF=false;
 }
 
-void _ISR _U1TXInterrupt(){
+void __attribute__((interrupt, auto_psv)) _U1TXInterrupt(){
     while (!ring2_empty(&tx_ring)&& U1STAbits.UTXBF == false) {
         U1TXREG=ring2_getc(&tx_ring);
     }
