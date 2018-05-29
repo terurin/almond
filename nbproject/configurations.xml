@@ -50,7 +50,12 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>driver/qei.c</itemPath>
+    <itemPath>driver/qei.h</itemPath>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>driver</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">

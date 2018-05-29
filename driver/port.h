@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 //全てのPinの名前の定義(32bit)
-typedef enum {
+typedef enum pin_number{
     PIN_NONE = 0, //for error
     PIN_HA = 1,
     PIN_HB,
@@ -55,31 +55,30 @@ typedef enum {
     PIN_TX,
     PIN_QEI_Y,
     PIN_QEI_X
-} pin_id;
+} pin_number_t;
 
+bool pin_number_check(pin_number_t num);
 
-
+//基本的なIO
 typedef uint8_t number_t;
 typedef uint8_t port_t;
-struct pin_pair{
+struct pin{
     number_t number;
     port_t port;
 };
-
-//基本的なIO
-typedef struct pin_pair pin_pair_t;
-extern const pin_pair_t pin_pair_error;
-bool pin_exist(pin_id);
-pin_pair_t pin_cast_pair(pin_id);
-static inline bool pin_pair_check(pin_pair_t pair ){
+typedef struct pin pin_t;
+extern const pin_t pin_pair_error;
+bool pin_exist(pin_number_t);
+pin_t pin_make(pin_number_t);
+static inline bool pin_pair_check(pin_t pair ){
     return (pair.number!=pin_pair_error.number)&&(pair.port!=pin_pair_error.port);//正常ならtrue
 }
 
 //周辺機器ID
 typedef uint16_t peripheral_id;
 extern const peripheral_id peripheral_error;
-bool pin_has_peripheral(pin_id);
-peripheral_id pin_cast_peripheral(pin_id);
+bool pin_has_peripheral(pin_number_t);
+peripheral_id pin_cast_peripheral(pin_number_t);
 static inline bool peripheral_cheak(peripheral_id p){
     return p!=peripheral_error;
 }
@@ -87,8 +86,8 @@ static inline bool peripheral_cheak(peripheral_id p){
 //状態変化ピン
 typedef uint16_t change_id; //状態変化ピンのID
 extern const change_id change_error;
-bool pin_has_change(pin_id);
-change_id pin_cast_change(pin_id);
+bool pin_has_change(pin_number_t);
+change_id pin_cast_change(pin_number_t);
 static inline bool change_cheak(peripheral_id p){
     return p!=change_error;
 }
@@ -96,8 +95,8 @@ static inline bool change_cheak(peripheral_id p){
 //アナログID
 typedef uint16_t analog_id; //アナログピンのID
 extern const analog_id analog_error;
-bool pin_has_analog(pin_id);
-analog_id pin_cast_analog(pin_id);
+bool pin_has_analog(pin_number_t);
+analog_id pin_cast_analog(pin_number_t);
 static inline bool analog_cheak(peripheral_id p){
     return p!=analog_error;
 }
@@ -138,58 +137,52 @@ enum ppsi_name {
 };
 typedef enum ppsi_name ppsi_name_t;
 
-
-
-//basic pin function
+//basic pin function (高速化のためにpinを用いる)
 //入力ならtrue,出力ならfalse
-void pin_direction(pin_pair_t, bool);
-void pin_drain(pin_pair_t, bool);
-bool pin_read(pin_pair_t);
-void pin_write(pin_pair_t pin, bool out);
-void pin_set(pin_pair_t);
-void pin_clear(pin_pair_t);
+void pin_direction(pin_t, bool);
+void pin_drain(pin_t, bool);
+bool pin_read(pin_t);
+void pin_write(pin_t pin, bool out);
+void pin_set(pin_t);
+void pin_clear(pin_t);
+void pin_toggle(pin_t);
 
 //出力先変更
-void ppso_assign(pin_id pin, ppso_name_t ppso);
+void ppso_assign(pin_number_t pin, ppso_name_t ppso);
 //入力先変更
-void ppsi_assign(pin_id pin, ppsi_name_t ppsi);
+void ppsi_assign(pin_number_t pin, ppsi_name_t ppsi);
 //アナログ
 // flag...trueなら利用する。
-void analog_assign(pin_id pin, bool flag);
+void analog_assign(pin_number_t pin, bool flag);
 
-//状態変化割り込みについて
-//true...割り込み有効
-void pin_change(pin_id, bool);
 
-//プルアップについて
-//true...抵抗を有効化
-void pin_pull_up(pin_id, bool);
 
 //デジタル出力として設定する
-
-static inline void pin_dout(pin_id pin) {
-    pin_pair_t pair = pin_cast_pair(pin);
-    pin_direction(pair, false);
-    analog_assign(pin, false);
-    pin_write(pair, true);
+static inline void pin_dout(pin_number_t number) {
+    pin_t pin = pin_make(number);
+    pin_direction(pin, false);
+    analog_assign(number, false);
+    pin_write(pin, true);
 }
 
 //デジタル入力として設定する。
+static inline void pin_din(pin_number_t number) {
+    pin_t pin = pin_make(number);
+    pin_direction(pin, true);
+    analog_assign(number, false);
 
-static inline void pin_din(pin_id pin) {
-    pin_pair_t pair = pin_cast_pair(pin);
-    pin_direction(pair, true);
-    analog_assign(pin, false);
-    pin_pull_up(pin, true);
 }
 
-//アナログ入力として設定する
 
 
+//状態変化割り込みについて
+//プルアップについて
 //割り込み登録
-typedef uint16_t change_t;
+
 typedef void(change_handle_t) (void*);
 void change_init();
+void change_pull_up(pin_number_t, bool);//true...抵抗を有効化
+void change_assign(pin_number_t, bool);
 void change_event(change_handle_t, void*);
 
 #endif

@@ -10,9 +10,7 @@ static volatile uint16_t * const odcs[] = {&ODCA, &ODCB, &ODCC};
 static volatile uint16_t * const ports[] = {&PORTA, &PORTB, &PORTC};
 static volatile uint16_t * const lats[] = {&LATA, &LATB, &LATC};
 
-//状態変化割り込み
-static change_handle_t* callback_handle = NULL;
-static void* callback_object = NULL;
+
 
 //ピンのテーブル
 
@@ -163,15 +161,19 @@ const static pin_info_t pin_table[] = {
         .has_peripheral = true, .peripheral = 8, .has_change = true, .change = 22},
 };
 //エラー検知用の定数
-const pin_pair_t pin_pair_error = {
+const pin_t pin_pair_error = {
     .number = 0xff, .port = 0xff
 };
+
+bool pin_number_check(pin_number_t num){
+    return 0<=num&&num<pin_table_count;
+}
 
 const peripheral_id peripheral_error= 0xffff;
 const change_id change_error=0xffff;
 const analog_id analog_error=0xffff;
 
-static inline const pin_info_t* get_info(pin_id id) {
+static inline const pin_info_t* get_info(pin_number_t id) {
     if (id < pin_table_count) {
         return pin_table+id;
     } else {
@@ -179,7 +181,7 @@ static inline const pin_info_t* get_info(pin_id id) {
     }
 }
 
-bool pin_exist(pin_id id) {
+bool pin_exist(pin_number_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         return info->exist;
@@ -188,11 +190,11 @@ bool pin_exist(pin_id id) {
     }
 }
 
-pin_pair_t pin_cast_pair(pin_id id) {
+pin_t pin_make(pin_number_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         if (info->exist) {
-            pin_pair_t pair = {.number = info->number, .port = info->port};
+            pin_t pair = {.number = info->number, .port = info->port};
             return pair;
         } else {
             return pin_pair_error;
@@ -202,7 +204,7 @@ pin_pair_t pin_cast_pair(pin_id id) {
     }
 }
 
-bool pin_has_peripheral(pin_id id) {
+bool pin_has_peripheral(pin_number_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         return info->has_peripheral;
@@ -211,7 +213,7 @@ bool pin_has_peripheral(pin_id id) {
     }
 }
 
-peripheral_id pin_cast_peripheral(pin_id id) {
+peripheral_id pin_cast_peripheral(pin_number_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         if (info->has_peripheral) {
@@ -224,7 +226,7 @@ peripheral_id pin_cast_peripheral(pin_id id) {
     }
 }
 
-bool pin_has_change(pin_id id) {
+bool pin_has_change(pin_number_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         return info->has_change;
@@ -233,7 +235,7 @@ bool pin_has_change(pin_id id) {
     }
 }
 
-change_t pin_cast_change(pin_id id){
+change_id pin_cast_change(pin_number_t id){
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         if (info->has_change) {
@@ -246,7 +248,7 @@ change_t pin_cast_change(pin_id id){
     }
 }
 
-bool pin_has_analog(pin_id id) {
+bool pin_has_analog(pin_number_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         return info->has_analog;
@@ -255,7 +257,7 @@ bool pin_has_analog(pin_id id) {
     }
 }
 
-analog_id pin_cast_analog(pin_id id){
+analog_id pin_cast_analog(pin_number_t id){
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         if (info->has_change) {
@@ -278,7 +280,7 @@ static inline void bits_write(volatile uint16_t* target, uint16_t mask, bool val
     }
 }
 
-void pin_direction(pin_pair_t pin, bool flag) {
+void pin_direction(pin_t pin, bool flag) {
     uint16_t port = pin.port;
     uint16_t mask = 1U<<pin.number;
     volatile uint16_t *target = trises[port];
@@ -287,7 +289,7 @@ void pin_direction(pin_pair_t pin, bool flag) {
     }
 }
 
-void pin_drain(pin_pair_t pin, bool flag) {
+void pin_drain(pin_t pin, bool flag) {
     uint16_t port = pin.port;
     uint16_t mask = 1u << pin.number;
     volatile uint16_t *target = odcs[port];
@@ -296,7 +298,7 @@ void pin_drain(pin_pair_t pin, bool flag) {
     }
 }
 
-bool pin_read(pin_pair_t pin) {
+bool pin_read(pin_t pin) {
     uint16_t port = pin.port;
     uint16_t mask = 1u << pin.port;
     volatile uint16_t *target = odcs[port];
@@ -307,7 +309,7 @@ bool pin_read(pin_pair_t pin) {
     }
 }
 
-void pin_write(pin_pair_t pin, bool flag) {
+void pin_write(pin_t pin, bool flag) {
     uint16_t port = pin.port;
     uint16_t mask = 1u << pin.number;
     volatile uint16_t *target = lats[port];
@@ -316,7 +318,7 @@ void pin_write(pin_pair_t pin, bool flag) {
     }
 }
 
-void pin_set(pin_pair_t pin) {
+void pin_set(pin_t pin) {
     uint16_t port = pin.port;
     uint16_t mask = 1u << pin.port;
     volatile uint16_t *target = lats[port];
@@ -325,7 +327,7 @@ void pin_set(pin_pair_t pin) {
     }
 }
 
-void pin_clear(pin_pair_t pin) {
+void pin_clear(pin_t pin) {
     uint16_t port = pin.port;
     uint16_t mask = 1u << pin.number;
     volatile uint16_t *target = lats[port];
@@ -334,7 +336,16 @@ void pin_clear(pin_pair_t pin) {
     }
 }
 
-void ppso_assign(pin_id pin, ppso_name_t ppso) {
+void pin_toggle(pin_t pin){
+    uint16_t port = pin.port;
+    uint16_t mask = 1u << pin.number;
+    volatile uint16_t *target = lats[port];
+    if (port < port_max) {
+        *target = *target ^mask;
+    }
+}
+
+void ppso_assign(pin_number_t pin, ppso_name_t ppso) {
     if (pin_has_peripheral(pin)) {
         peripheral_id pid = pin_cast_peripheral(pin);
         uint8_t* RPRn = (uint8_t*) & RPOR0; //起点を取得
@@ -344,7 +355,7 @@ void ppso_assign(pin_id pin, ppso_name_t ppso) {
     }
 }
 
-void ppsi_assign(pin_id pin, ppsi_name_t ppsi) {
+void ppsi_assign(pin_number_t pin, ppsi_name_t ppsi) {
     if (pin_has_peripheral(pin)) {
         uint8_t* RPRn = (uint8_t*) & RPINR0;
         uint16_t idx = (uint16_t) ppsi;
@@ -354,7 +365,7 @@ void ppsi_assign(pin_id pin, ppsi_name_t ppsi) {
     }
 }
 
-void analog_assign(pin_id pin, bool flag) {
+void analog_assign(pin_number_t pin, bool flag) {
     if (pin_has_analog(pin)) {
         uint16_t num = pin_cast_analog(pin);
         uint16_t mask = 1U << num;
@@ -362,38 +373,52 @@ void analog_assign(pin_id pin, bool flag) {
     }
 }
 
-void pin_change(pin_id pin, bool sw) {
-    if (!pin_has_change(pin))return;
-    uint16_t num = pin_cast_change(pin);
-    volatile uint16_t * target = !(num & 0x10) ? &CNEN1 : &CNEN2;
-    bits_write(target, num & 0xf, sw);
+//状態変化割り込み
+static change_handle_t* callback_handle = NULL;
+static void* callback_object = NULL;
+
+void change_init() {
+    //管理領域
+    callback_handle = NULL;
+    callback_object = NULL;
+    //プルアップ、割り込みを無効化
+    CNPU1=CNPU2=0;
+    CNEN1=CNEN2=0;
+    //割り込みを設定する
+    IFS1bits.CNIF = false;
+    IEC1bits.CNIE = false;
+    IPC4bits.CNIP = 6; //割り込み優先度
 }
 
-void pin_pull_up(pin_id pin, bool sw) {
+void change_pull_up(pin_number_t pin, bool sw) {
     if (!pin_has_change(pin))return;
     change_id num = pin_cast_change(pin);
     volatile uint16_t * target = !(num & 0x10) ? &CNPU1 : &CNPU2;
     bits_write(target, num & 0xf, sw);
 }
 
-void change_init() {
-    callback_handle = NULL;
-    callback_object = NULL;
-    IFS1bits.CNIF = false;
-    IEC1bits.CNIE = false;
-    IPC4bits.CNIP = 6; //割り込み優先度
+void change_assign(pin_number_t pin, bool sw) {
+    if (!pin_has_change(pin))return;
+    uint16_t num = pin_cast_change(pin);
+    volatile uint16_t * target = !(num & 0x10) ? &CNEN1 : &CNEN2;
+    bits_write(target, num & 0xf, sw);
 }
 
 void change_event(change_handle_t hwnd, void* obj) {
     callback_handle = hwnd;
     callback_object = obj;
     IFS1bits.CNIF = false;
-    IEC1bits.CNIE = hwnd != NULL;
+    IEC1bits.CNIE = (hwnd != NULL);
 }
 
 void __attribute__((interrupt, no_auto_psv)) _CNInterrupt() {
     if (callback_handle != NULL) {
         callback_handle(callback_object);
     }
+    //割り込み解除
+    uint16_t dummy;
+    dummy = PORTA;
+    dummy = PORTB;
+    dummy = PORTC;
     IFS1bits.CNIF = false;
 }

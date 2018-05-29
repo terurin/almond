@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/uart.c driver/config.c util/ring.c driver/clock.c driver/pwm.c mid/led.c
+SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/uart.c driver/config.c util/ring.c driver/clock.c driver/pwm.c mid/led.c driver/qei.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/mid/led.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/util/ring.o.d ${OBJECTDIR}/driver/clock.o.d ${OBJECTDIR}/driver/pwm.o.d ${OBJECTDIR}/mid/led.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/driver/qei.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/util/ring.o.d ${OBJECTDIR}/driver/clock.o.d ${OBJECTDIR}/driver/pwm.o.d ${OBJECTDIR}/mid/led.o.d ${OBJECTDIR}/driver/qei.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/mid/led.o
+OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/driver/qei.o
 
 # Source Files
-SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/uart.c driver/config.c util/ring.c driver/clock.c driver/pwm.c mid/led.c
+SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/uart.c driver/config.c util/ring.c driver/clock.c driver/pwm.c mid/led.c driver/qei.c
 
 
 CFLAGS=
@@ -157,6 +157,13 @@ ${OBJECTDIR}/mid/led.o: mid/led.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/led.c  -o ${OBJECTDIR}/mid/led.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/led.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/mid/led.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/driver/qei.o: driver/qei.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/driver" 
+	@${RM} ${OBJECTDIR}/driver/qei.o.d 
+	@${RM} ${OBJECTDIR}/driver/qei.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/qei.c  -o ${OBJECTDIR}/driver/qei.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/qei.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/driver/qei.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/app/main.o: app/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/app" 
@@ -220,6 +227,13 @@ ${OBJECTDIR}/mid/led.o: mid/led.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/mid/led.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/led.c  -o ${OBJECTDIR}/mid/led.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/led.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/mid/led.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/driver/qei.o: driver/qei.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/driver" 
+	@${RM} ${OBJECTDIR}/driver/qei.o.d 
+	@${RM} ${OBJECTDIR}/driver/qei.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/qei.c  -o ${OBJECTDIR}/driver/qei.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/qei.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/driver/qei.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
