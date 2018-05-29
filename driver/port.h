@@ -8,81 +8,99 @@
 #include <stdbool.h>
 #include <stdint.h>
 //全てのPinの名前の定義(32bit)
-enum pin_name {
-    PIN_UNKNOWN = 0xFFFFFF, //エラー
-    //[0..3] ... pin number
-    PIN_MASK_NUMBER = 0x00000F,
-    //[4..5] ... port
-    PIN_SHIFT_PORT = 4,
-    PIN_MASK_PORT = 0x000030L,
-    //[6..10] ...peripheral, not 31
-    PIN_SHIFT_SPECIAL = 8,
-    PIN_MASK_SPECIAL = 0x1FL<<PIN_SHIFT_SPECIAL, 
-    PIN_NOT_SPECIAL = 0x1FL << PIN_SHIFT_SPECIAL, //特に機能がないピン
-    //[11..15] ... cn , not 31
-    PIN_SHIFT_CHANGE = 16,
-    PIN_MASK_CHANGE = 0x1FL<<PIN_SHIFT_CHANGE,
-    PIN_NOT_CHANGE = 0x1FL<<PIN_SHIFT_CHANGE,
-    //[16..15] ... analog , not 15
-    PIN_SHIFT_ANALOG = 24,
-    PIN_MASK_ANALOG = 0x00F000,
-    PIN_NOT_ANALOG = 0x1FL << 12, //アナログピンではないピン
-    //1~22
-    PIN_HA = 0x19L | 9L << PIN_SHIFT_SPECIAL| 21L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_HB = 0x26L | 22L << PIN_SHIFT_SPECIAL | 18L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
-    PIN_HC = 0x27L | 23L << PIN_SHIFT_SPECIAL | 17L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
-    PIN_OTW = 0x28L | 24L << PIN_SHIFT_SPECIAL | 20L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
-    PIN_FALUT = 0x29L | 25L << PIN_SHIFT_SPECIAL | 19L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+typedef enum {
+    PIN_NONE = 0, //for error
+    PIN_HA = 1,
+    PIN_HB,
+    PIN_HC,
+    PIN_OTW,
+    PIN_FALUT,
     //VSS
     //VCAP
-    PIN_PWM_C = 0x10L | 10L <<PIN_SHIFT_SPECIAL  |16L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
-    PIN_RST_C = 0x11L | 11L << PIN_SHIFT_SPECIAL |15L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_PWM_B = 0x12L | 12L << PIN_SHIFT_SPECIAL |14L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
-    PIN_RST_B = 0x13L | 13L << PIN_SHIFT_SPECIAL | 13L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
-    PIN_LED_A = 0x0AL | PIN_NOT_SPECIAL | PIN_NOT_CHANGE| PIN_NOT_ANALOG,
-    PIN_LED_B = 0x07L | PIN_NOT_SPECIAL | PIN_NOT_CHANGE| PIN_NOT_ANALOG,
-    PIN_PWM_A = 0x1EL | 14L << PIN_SHIFT_SPECIAL |12L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_RST_A = 0x1FL | 15L << PIN_SHIFT_SPECIAL |11L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
+    PIN_PWM_C = 8,
+    PIN_RST_C,
+    PIN_PWM_B,
+    PIN_RST_B,
+    PIN_LED_A,
+    PIN_LED_B,
+    PIN_PWM_A,
+    PIN_RST_A,
     //AVSS
     //ADDD
     //MCRL
-    PIN_VREF = 0x00L | PIN_NOT_SPECIAL |2L<<PIN_SHIFT_CHANGE| 0L << PIN_SHIFT_ANALOG,
-    PIN_RESERVE = 0x01L | PIN_NOT_SPECIAL | 3L<<PIN_SHIFT_CHANGE|1L << PIN_SHIFT_ANALOG,
-    PIN_PGD = 0x10L | 0L << PIN_SHIFT_SPECIAL | 4L<<PIN_SHIFT_CHANGE|2L << PIN_SHIFT_ANALOG,
-    PIN_PGC = 0x11L | 1L << PIN_SHIFT_SPECIAL |5L<<PIN_SHIFT_CHANGE| 3L << PIN_SHIFT_ANALOG,
+    PIN_VREF = 19,
+    PIN_RESERVE,
+    PIN_PGD,
+    PIN_PGC,
     //23~44
-    PIN_VM = 0x12L | 2L << PIN_SHIFT_SPECIAL | 6L<<PIN_SHIFT_CHANGE|4L << PIN_SHIFT_ANALOG,
-    PIN_CA = 0x13L | 3L << PIN_SHIFT_SPECIAL | 7L<<PIN_SHIFT_CHANGE|5L << PIN_SHIFT_ANALOG,
-    PIN_CB = 0x20L | 16L << PIN_SHIFT_SPECIAL |8L<<PIN_SHIFT_CHANGE| 6L << PIN_SHIFT_ANALOG,
-    PIN_CC = 0x21L | 17L << PIN_SHIFT_SPECIAL | 9L<<PIN_SHIFT_CHANGE|7L << PIN_SHIFT_ANALOG,
-    PIN_RESERVE2 = 0x22L | 18<<PIN_SHIFT_SPECIAL|10L<<PIN_SHIFT_CHANGE|8L << PIN_SHIFT_ANALOG,
+    PIN_VM = 23,
+    PIN_CA,
+    PIN_CB,
+    PIN_CC,
+    PIN_RESERVE2,
     //VDD
     //VSS
-    PIN_CLKIN = 0x02L | PIN_NOT_SPECIAL|30L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_CLKOUT = 0x0L | PIN_NOT_SPECIAL|29L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_LED_C = 0x08L | PIN_NOT_SPECIAL| PIN_NOT_CHANGE| PIN_NOT_ANALOG,
-    PIN_CS    = 0x14L | 4L << PIN_SHIFT_SPECIAL| 1L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
-    PIN_HALT  = 0x04L | PIN_NOT_SPECIAL| 0L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
-    PIN_LED_D = 0x09L | PIN_NOT_SPECIAL| PIN_NOT_CHANGE| PIN_NOT_ANALOG,
-    PIN_MISO  = 0x23L | 19L << PIN_SHIFT_SPECIAL|28L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_MOSI  = 0x24L | 20L << PIN_SHIFT_SPECIAL|25L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_MCLK  = 0x25L | 21L << PIN_SHIFT_SPECIAL| 26L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG,
+    PIN_CLKIN = 30,
+    PIN_CLKOUT,
+    PIN_LED_C,
+    PIN_CS,
+    PIN_HALT,
+    PIN_LED_D,
+    PIN_MISO,
+    PIN_MOSI,
+    PIN_MCLK,
     //VSS
     //VDD
-    PIN_RX = 0x15L | 5L << PIN_SHIFT_SPECIAL|27L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_TX = 0x16L | 6L << PIN_SHIFT_SPECIAL|24L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_QEI_Y = 0x17L | 7L << PIN_SHIFT_SPECIAL|23L<<PIN_SHIFT_CHANGE| PIN_NOT_ANALOG,
-    PIN_QEI_X = 0x18L | 8L << PIN_SHIFT_SPECIAL| 22L<<PIN_SHIFT_CHANGE|PIN_NOT_ANALOG
-};
-typedef enum pin_name pin_name_t;
+    PIN_RX = 41,
+    PIN_TX,
+    PIN_QEI_Y,
+    PIN_QEI_X
+} pin_id;
 
-enum port_name {
-    PORT_A = 0,
-    PORT_B,
-    PORT_C,
-    PORT_UNKNOWN = 0xFF
+
+
+typedef uint8_t number_t;
+typedef uint8_t port_t;
+struct pin_pair{
+    number_t number;
+    port_t port;
 };
-typedef enum port_name port_name_t;
+
+//基本的なIO
+typedef struct pin_pair pin_pair_t;
+extern const pin_pair_t pin_pair_error;
+bool pin_exist(pin_id);
+pin_pair_t pin_cast_pair(pin_id);
+static inline bool pin_pair_check(pin_pair_t pair ){
+    return (pair.number!=pin_pair_error.number)&&(pair.port!=pin_pair_error.port);//正常ならtrue
+}
+
+//周辺機器ID
+typedef uint16_t peripheral_id;
+extern const peripheral_id peripheral_error;
+bool pin_has_peripheral(pin_id);
+peripheral_id pin_cast_peripheral(pin_id);
+static inline bool peripheral_cheak(peripheral_id p){
+    return p!=peripheral_error;
+}
+
+//状態変化ピン
+typedef uint16_t change_id; //状態変化ピンのID
+extern const change_id change_error;
+bool pin_has_change(pin_id);
+change_id pin_cast_change(pin_id);
+static inline bool change_cheak(peripheral_id p){
+    return p!=change_error;
+}
+
+//アナログID
+typedef uint16_t analog_id; //アナログピンのID
+extern const analog_id analog_error;
+bool pin_has_analog(pin_id);
+analog_id pin_cast_analog(pin_id);
+static inline bool analog_cheak(peripheral_id p){
+    return p!=analog_error;
+}
 
 //出力周辺機器IO
 enum ppso_name {
@@ -97,9 +115,9 @@ enum ppso_name {
     PPSO_UPDN = 0b11010
 };
 typedef enum ppso_name ppso_name_t;
+
 //入力周辺機器IO
 //参考　データーシート(p46)
-
 enum ppsi_name {
     PPSI_INT1 = 0 << 1 | 1,
     PPSI_INT2 = 1 << 1 | 0,
@@ -116,94 +134,62 @@ enum ppsi_name {
     PPSI_SDI = 20 << 1 | 0,
     PPSI_SCK = 20 << 1 | 1,
     PPSI_SS = 21 << 1 | 0,
-    PPSI_END = 21 << 1 | 1,//defect error
+    PPSI_END = 21 << 1 | 1, //defect error
 };
 typedef enum ppsi_name ppsi_name_t;
 
-//property
-static inline uint16_t pin_get_number(pin_name_t pin) {
-    return  pin & PIN_MASK_NUMBER;
-}
 
-static inline port_name_t pin_get_port(pin_name_t pin) {
-    return ( pin & PIN_MASK_PORT) >> PIN_SHIFT_PORT;
-}
-
-//周辺機器ID
-static inline uint16_t pin_get_special(pin_name_t pin) {
-    return ( pin & PIN_MASK_SPECIAL) >> PIN_SHIFT_SPECIAL;
-}
-
-static inline bool pin_has_special(pin_name_t pin){
-    return ( pin & PIN_MASK_SPECIAL)!=PIN_NOT_SPECIAL;
-}
-
-//状態変化ピン
-static inline uint16_t pin_get_change(pin_name_t pin){
-    return (pin&PIN_MASK_CHANGE)>>PIN_SHIFT_CHANGE;
-}
-
-static inline bool pin_has_change(pin_name_t pin){
-    return (pin&PIN_MASK_CHANGE)==PIN_NOT_CHANGE;
-}
-
-//アナログID
-static inline uint16_t pin_get_analog(pin_name_t pin) {
-    return ( pin & PIN_MASK_ANALOG) >> PIN_SHIFT_ANALOG;
-}
-
-static inline bool pin_has_analog(pin_name_t pin){
-    return ( pin & PIN_MASK_ANALOG) !=PIN_NOT_ANALOG;
-}
 
 //basic pin function
 //入力ならtrue,出力ならfalse
-void pin_direction(pin_name_t, bool);
-void pin_drain(pin_name_t,bool);
-bool pin_read(pin_name_t);
-void pin_write(pin_name_t pin, bool out);
-void pin_set(pin_name_t);
-void pin_clear(pin_name_t);
+void pin_direction(pin_pair_t, bool);
+void pin_drain(pin_pair_t, bool);
+bool pin_read(pin_pair_t);
+void pin_write(pin_pair_t pin, bool out);
+void pin_set(pin_pair_t);
+void pin_clear(pin_pair_t);
 
 //出力先変更
-void ppso_assign(pin_name_t pin, ppso_name_t ppso);
+void ppso_assign(pin_id pin, ppso_name_t ppso);
 //入力先変更
-void ppsi_assign(pin_name_t pin, ppsi_name_t ppsi);
+void ppsi_assign(pin_id pin, ppsi_name_t ppsi);
 //アナログ
 // flag...trueなら利用する。
-void analog_assign(pin_name_t pin, bool flag);
+void analog_assign(pin_id pin, bool flag);
 
 //状態変化割り込みについて
 //true...割り込み有効
-void pin_change(pin_name_t,bool);
+void pin_change(pin_id, bool);
 
 //プルアップについて
 //true...抵抗を有効化
-void pin_pull_up(pin_name_t,bool);
+void pin_pull_up(pin_id, bool);
 
 //デジタル出力として設定する
-static inline void pin_dout(pin_name_t pin){
-    pin_direction(pin,false);
-    analog_assign(pin,false);
-    pin_write(pin,true);
+
+static inline void pin_dout(pin_id pin) {
+    pin_pair_t pair = pin_cast_pair(pin);
+    pin_direction(pair, false);
+    analog_assign(pin, false);
+    pin_write(pair, true);
 }
 
 //デジタル入力として設定する。
-static inline void pin_din(pin_name_t pin){
-    pin_direction(pin,true);
-    analog_assign(pin,false);
-    pin_pull_up(pin,true);
+
+static inline void pin_din(pin_id pin) {
+    pin_pair_t pair = pin_cast_pair(pin);
+    pin_direction(pair, true);
+    analog_assign(pin, false);
+    pin_pull_up(pin, true);
 }
 
 //アナログ入力として設定する
-static inline void pin_ain(pin_name_t pin){
-    pin_direction(pin,true);
-    analog_assign(pin,true);
-}
+
 
 //割り込み登録
-typedef void(change_handle_t)(void*);
+typedef uint16_t change_t;
+typedef void(change_handle_t) (void*);
 void change_init();
-void change_event(change_handle_t,void*);
+void change_event(change_handle_t, void*);
 
 #endif
