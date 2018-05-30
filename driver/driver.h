@@ -5,8 +5,8 @@
  * Created on May 24, 2018, 11:10 AM
  */
 
-#ifndef DRIVER_H
-#define	DRIVER_H
+#ifndef DRIVER_HEADER_GUARD
+#define	DRIVER_HEADER_GUARD
 
 int driver_init();//全てのドライバーを初期化する
 
