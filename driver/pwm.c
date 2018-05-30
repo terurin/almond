@@ -20,9 +20,25 @@ static const uint32_t cycle = (10.0f * KHZ);
 static uint16_t period = 0; //制御周期
 static fractional duty_min = Q15(0.1); //duty比の下限(安全対策)
 #define UP_DOWN (false) //PWMの動作モード　アップダウンならtrue,フリーランならfalse
+//内部テーブル
+static volatile uint16_t *const  dc_table[] = {&P1DC1, &P1DC2, &P1DC3};
+
 //割り込み　コールバック用
-static pwm_handler_t* callback_handler=NULL;
-static void *callback_object=NULL;
+static pwm_handler_t* callback_handler = NULL;
+static void *callback_object = NULL;
+
+//制限関数
+static inline uint16_t clip(fractional rate) {
+    if (rate > duty_min) {
+        uint16_t duty = ((uint32_t) period * rate) >> 14;
+        return duty;
+    } else {
+        //stop motor because duty is too few
+        return 0;
+    }
+}
+
+
 
 //すべてのHBを開放する
 static const P1OVDCONBITS ov_free = {
@@ -208,7 +224,7 @@ void pwm_init() {
     period = PTPER = period_free();
 #endif
     PTMR = 0;
-    pwm_duty_raw(0);
+    pwm_duty_write_all(0);
     //割り込みを許可する
     IFS3bits.PWM1IF = false;
     IPC14bits.PWM1IP = 6; //割り込み優先度(up to 7)
@@ -239,18 +255,22 @@ void pwm_state(pwm_state_name_t state) {
     P1OVDCONbits = mode;
 }
 
-void pwm_duty_raw(uint16_t duty) {
-    P1DC1 = P1DC2 = P1DC3 = duty;
+void pwm_duty_write(pwm_pole_id id,uint16_t value){
+    if (PWM_POLE_A<=id&&id<PWM_POLE_END){
+        *dc_table[id]=value;
+    }
 }
 
-void pwm_duty(fractional rate) {
-    if (rate > duty_min) {
-        uint16_t duty = ((uint32_t) period * rate) >> 14;
-        pwm_duty_raw(duty);
-    } else {
-        //stop motor because duty is too few
-        pwm_duty_raw(0);
-    }
+void pwm_rate_write(pwm_pole_id id,fractional rate){
+    pwm_duty_write(id,clip(rate));
+}
+
+void pwm_rate_write_all(fractional rate){
+    pwm_duty_write_all(clip(rate));
+}
+
+void pwm_rate_all(fractional rate) {
+    pwm_duty_write_all(clip(rate));
 }
 
 pwm_state_name_t pwm_state_front(pwm_state_name_t state) {
@@ -277,19 +297,20 @@ pwm_state_name_t pwm_state_back(pwm_state_name_t state) {
     }
 
 }
-pwm_state_name_t pwm_state_hold(pwm_state_name_t state){
+
+pwm_state_name_t pwm_state_hold(pwm_state_name_t state) {
     return state;
 }
 
-void pwm_event(pwm_handler_t hwnd,void* obj){
-    callback_handler=hwnd;
-    callback_object=obj;
+void pwm_event(pwm_handler_t hwnd, void* obj) {
+    callback_handler = hwnd;
+    callback_object = obj;
     IFS3bits.PWM1IF = false;
-    IEC3bits.PWM1IE = hwnd!=NULL;
+    IEC3bits.PWM1IE = hwnd != NULL;
 }
 
 void __attribute__((interrupt, no_auto_psv)) _MPWM1Interrupt() {
-    if (callback_handler!=NULL){
+    if (callback_handler != NULL) {
         callback_handler(callback_object);
     }
     IFS3bits.PWM1IF = false;
