@@ -7,7 +7,7 @@
 #define DRIVER_QEI_HEADER_GUARD
 
 #include <stdint.h>
-
+#include <stdbool.h>
 void qei_init();
 int16_t qei_read();
 int16_t qei_load();
