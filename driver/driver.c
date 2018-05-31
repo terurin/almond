@@ -5,7 +5,7 @@
 #include "uart.h"
 #include "cn.h"
 #include "int.h"
-
+#include "qei.h"
 
 int driver_init(){
     clock_init();
