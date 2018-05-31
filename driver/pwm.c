@@ -269,9 +269,7 @@ void pwm_rate_write_all(fractional rate){
     pwm_duty_write_all(clip(rate));
 }
 
-void pwm_rate_all(fractional rate) {
-    pwm_duty_write_all(clip(rate));
-}
+
 
 pwm_state_name_t pwm_state_front(pwm_state_name_t state) {
     if (state < PWM_STATE_END) {

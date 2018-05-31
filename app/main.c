@@ -11,7 +11,7 @@ void test(void* obj){
 int main(void) {
     driver_init();
     
-    pwm_rate_all(Q15(0.9));
+    pwm_rate_write_all(Q15(0.9));
     pwm_event(test,NULL);
     
     for(;;);
