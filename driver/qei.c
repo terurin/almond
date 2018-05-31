@@ -41,3 +41,7 @@ int16_t qei_load(){
     POSCNT=0;
     return result;
 }
+
+bool qei_direction(){
+    return QEI1CONbits.UPDN;
+}
