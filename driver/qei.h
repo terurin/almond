@@ -6,7 +6,10 @@
 #ifndef DRIVER_QEI_HEADER_GUARD
 #define DRIVER_QEI_HEADER_GUARD
 
-void qei_init();
-int16_t qei_load();
+#include <stdint.h>
 
+void qei_init();
+int16_t qei_read();
+int16_t qei_load();
+bool qei_direction();//現在の進行方向
 #endif

@@ -32,6 +32,10 @@ void qei_init(){
     MAXCNT=0xffff;//not use
 }
 
+int16_t qei_read(){
+    return (int16_t)POSCNT;
+}
+
 int16_t qei_load(){
     int16_t result = (int16_t)POSCNT;
     POSCNT=0;
