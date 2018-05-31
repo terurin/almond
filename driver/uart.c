@@ -63,9 +63,9 @@ void uart_init() {
     ring2_init(&rx_ring, rx_buf, RX_BUFFER_SIZE_LOG2);
 
     //接続
-    pin_dout(PIN_TX);
+    port_dout(PIN_TX);
     port_ppso(PIN_TX, PPSO_U1TX);
-    pin_din(PIN_RX);
+    port_din(PIN_RX);
     port_ppsi(PIN_RX, PPSI_U1RX);
 
     //Uartの各種設定

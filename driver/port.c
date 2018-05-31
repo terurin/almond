@@ -10,8 +10,13 @@ static volatile uint16_t * const odcs[] = {&ODCA, &ODCB, &ODCC};
 static volatile uint16_t * const ports[] = {&PORTA, &PORTB, &PORTC};
 static volatile uint16_t * const lats[] = {&LATA, &LATB, &LATC};
 
-//bit operation
+void port_init(){
+   
+    
 
+
+    
+}
 
 void port_direction(port_t pin, bool flag) {
     uint16_t port = pin.port;
@@ -108,17 +113,3 @@ void analog_assign(pin_t pin, bool flag) {
 
 
 
-//INT割り込みについて
-typedef struct int_pair{
-    int_handle_t handle;
-    void *object;
-} int_pair_t;
-static int_pair_t int_table[INT_ID_END];
-
-void int_init(){
-    int idx;
-    for (idx=0;idx<INT_ID_END;idx++){
-        int_table[idx].handle=NULL;
-        int_table[idx].object=NULL;
-    }
-}

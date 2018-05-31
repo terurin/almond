@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="62">
   <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="f1" displayName="Document Files" projectFiles="true">
+      <logicalFolder name="f1" displayName="New Folder 1" projectFiles="true">
+      </logicalFolder>
+      <itemPath>doc/dspic33f32mc204.pdf</itemPath>
+    </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
@@ -66,6 +71,7 @@
   <sourceRootList>
     <Elem>driver</Elem>
     <Elem>util</Elem>
+    <Elem>doc</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

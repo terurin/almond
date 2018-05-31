@@ -21,7 +21,4 @@ static inline void bits_write_reg(volatile uint16_t* target, uint16_t mask, bool
 
 
 
-
-
-
 #endif

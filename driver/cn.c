@@ -15,7 +15,7 @@ void change_init() {
     //割り込みを設定する
     IFS1bits.CNIF = false;
     IEC1bits.CNIE = false;
-    IPC4bits.CNIP = 6; //割り込み優先度
+    IPC4bits.CNIP = 5; //割り込み優先度
 }
 
 void change_pull_up(pin_t pin, bool sw) {
@@ -44,7 +44,7 @@ void __attribute__((interrupt, no_auto_psv)) _CNInterrupt() {
         callback_handle(callback_object);
     }
     //割り込み解除
-    uint16_t dummy;
+    volatile uint16_t dummy;
     dummy = PORTA;
     dummy = PORTB;
     dummy = PORTC;

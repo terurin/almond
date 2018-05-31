@@ -44,6 +44,8 @@ enum ppsi_name {
 };
 typedef enum ppsi_name ppsi_name_t;
 
+void port_init();
+
 //basic pin function (高速化のためにpinを用いる)
 //入力ならtrue,出力ならfalse
 void port_direction(port_t, bool);
@@ -65,7 +67,7 @@ void analog_assign(pin_t pin, bool flag);
 
 
 //デジタル出力として設定する
-static inline void pin_dout(pin_t number) {
+static inline void port_dout(pin_t number) {
     port_t pin = port_cast_pin(number);
     port_direction(pin, false);
     analog_assign(number, false);
@@ -73,29 +75,13 @@ static inline void pin_dout(pin_t number) {
 }
 
 //デジタル入力として設定する。
-static inline void pin_din(pin_t number) {
+static inline void port_din(pin_t number) {
     port_t pin = port_cast_pin(number);
     port_direction(pin, true);
     analog_assign(number, false);
 
 }
 
-//通常割り込み
-enum int_name{
-    INT_ID_0=0,
-    INT_ID_1,
-    INT_ID_2,
-    INT_ID_END //終端処理用
-};
-typedef enum int_name int_id;
-enum int_mode{
-    INT_MODE_RASING,
-    INT_MODE_FALLING,
-};
-typedef enum int_mode int_mode_t;
-typedef void(*int_handle_t)(void*);
-void int_init();
-void int_config(int_id,int_mode_t,unsigned int);
-void int_event(int_id,int_handle_t,void*);
+
 
 #endif

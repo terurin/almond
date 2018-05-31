@@ -14,7 +14,7 @@ struct pin_info {
     //1Word
     unsigned number : 4; //
     unsigned port : 2;
-    unsigned : 1;
+    unsigned :1;
     unsigned exist : 1;
     unsigned analog : 4;
     unsigned has_analog : 1;
