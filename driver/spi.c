@@ -89,9 +89,6 @@ bool spi_empty(){
     return ring2_used(&rx_ring)<sizeof(uint16_t);
 }
 
-
-
-
 //異常発生時(今は使っていない)
 void __attribute__((interrupt, auto_psv)) _SPI1ErrInterrupt(){
     IFS0bits.SPI1EIF=false;
