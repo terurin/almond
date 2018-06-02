@@ -14,7 +14,7 @@ void led_init() {
         port_t pin = port_cast_pin(number);
         //消灯
         port_direction(pin,false);
-        analog_assign(number,false);
+        pin_set_analog(number,false);
         //記録する
         note[idx] =pin;
     }
