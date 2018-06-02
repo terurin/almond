@@ -22,9 +22,9 @@ void qei_init(){
     
     //IO設定
     port_din(PIN_QEI_X);
-    port_ppsi(PIN_QEI_X,PPSI_QEIA);
+    pin_set_ppsi(PIN_QEI_X,PPSI_QEIA);
     port_din(PIN_QEI_Y);
-    port_ppsi(PIN_QEI_Y,PPSI_QEIB);
+    pin_set_ppsi(PIN_QEI_Y,PPSI_QEIB);
     //内部レジスタ設定
     QEI1CONbits=con1;
     DFLT1CONbits=dflt;

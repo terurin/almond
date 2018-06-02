@@ -19,6 +19,8 @@
         <itemPath>driver/qei.h</itemPath>
         <itemPath>driver/pwm.h</itemPath>
         <itemPath>driver/spi.h</itemPath>
+        <itemPath>driver/pin.h</itemPath>
+        <itemPath>driver/cn.h</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
         <itemPath>mid/led.h</itemPath>
@@ -50,6 +52,8 @@
         <itemPath>driver/pwm.c</itemPath>
         <itemPath>mid/unity_system.c</itemPath>
         <itemPath>driver/spi.c</itemPath>
+        <itemPath>driver/pin.c</itemPath>
+        <itemPath>driver/cn.c</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
       </logicalFolder>
@@ -62,8 +66,8 @@
       <itemPath>Makefile</itemPath>
       <itemPath>.gitignore</itemPath>
     </logicalFolder>
-    <itemPath>driver/pin.c</itemPath>
-    <itemPath>driver/pin.h</itemPath>
+    <itemPath>driver/int.c</itemPath>
+    <itemPath>driver/int.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>driver</Elem>

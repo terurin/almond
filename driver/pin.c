@@ -1,5 +1,5 @@
 #include "pin.h"
-
+#include <p33Fxxxx.h>
 //エラー検知用の定数
 const port_t pin_pair_error = {
     .number = 0xff, .port = 0xff
