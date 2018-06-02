@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/config.c driver/clock.c driver/uart.c driver/timer.c driver/qei.c driver/pwm.c driver/spi.c driver/pin.c driver/cn.c mid/unity_system.c driver/int.c util/ring.c util/pidc.c mid/led.c mid/hole.c
+SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/config.c driver/clock.c driver/uart.c driver/timer.c driver/qei.c driver/pwm.c driver/spi.c driver/pin.c driver/cn.c mid/unity_system.c driver/int.c util/ring.c util/pidc.c mid/led.c mid/hole.c util/qmath.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/timer.o ${OBJECTDIR}/driver/qei.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/driver/spi.o ${OBJECTDIR}/driver/pin.o ${OBJECTDIR}/driver/cn.o ${OBJECTDIR}/mid/unity_system.o ${OBJECTDIR}/driver/int.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/util/pidc.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/mid/hole.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/driver/clock.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/driver/timer.o.d ${OBJECTDIR}/driver/qei.o.d ${OBJECTDIR}/driver/pwm.o.d ${OBJECTDIR}/driver/spi.o.d ${OBJECTDIR}/driver/pin.o.d ${OBJECTDIR}/driver/cn.o.d ${OBJECTDIR}/mid/unity_system.o.d ${OBJECTDIR}/driver/int.o.d ${OBJECTDIR}/util/ring.o.d ${OBJECTDIR}/util/pidc.o.d ${OBJECTDIR}/mid/led.o.d ${OBJECTDIR}/mid/hole.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/timer.o ${OBJECTDIR}/driver/qei.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/driver/spi.o ${OBJECTDIR}/driver/pin.o ${OBJECTDIR}/driver/cn.o ${OBJECTDIR}/mid/unity_system.o ${OBJECTDIR}/driver/int.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/util/pidc.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/mid/hole.o ${OBJECTDIR}/util/qmath.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/driver/clock.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/driver/timer.o.d ${OBJECTDIR}/driver/qei.o.d ${OBJECTDIR}/driver/pwm.o.d ${OBJECTDIR}/driver/spi.o.d ${OBJECTDIR}/driver/pin.o.d ${OBJECTDIR}/driver/cn.o.d ${OBJECTDIR}/mid/unity_system.o.d ${OBJECTDIR}/driver/int.o.d ${OBJECTDIR}/util/ring.o.d ${OBJECTDIR}/util/pidc.o.d ${OBJECTDIR}/mid/led.o.d ${OBJECTDIR}/mid/hole.o.d ${OBJECTDIR}/util/qmath.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/timer.o ${OBJECTDIR}/driver/qei.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/driver/spi.o ${OBJECTDIR}/driver/pin.o ${OBJECTDIR}/driver/cn.o ${OBJECTDIR}/mid/unity_system.o ${OBJECTDIR}/driver/int.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/util/pidc.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/mid/hole.o
+OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/driver/timer.o ${OBJECTDIR}/driver/qei.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/driver/spi.o ${OBJECTDIR}/driver/pin.o ${OBJECTDIR}/driver/cn.o ${OBJECTDIR}/mid/unity_system.o ${OBJECTDIR}/driver/int.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/util/pidc.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/mid/hole.o ${OBJECTDIR}/util/qmath.o
 
 # Source Files
-SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/config.c driver/clock.c driver/uart.c driver/timer.c driver/qei.c driver/pwm.c driver/spi.c driver/pin.c driver/cn.c mid/unity_system.c driver/int.c util/ring.c util/pidc.c mid/led.c mid/hole.c
+SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/config.c driver/clock.c driver/uart.c driver/timer.c driver/qei.c driver/pwm.c driver/spi.c driver/pin.c driver/cn.c mid/unity_system.c driver/int.c util/ring.c util/pidc.c mid/led.c mid/hole.c util/qmath.c
 
 
 CFLAGS=
@@ -220,6 +220,13 @@ ${OBJECTDIR}/mid/hole.o: mid/hole.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/hole.c  -o ${OBJECTDIR}/mid/hole.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/hole.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions -menable-fixed
 	@${FIXDEPS} "${OBJECTDIR}/mid/hole.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/util/qmath.o: util/qmath.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/util" 
+	@${RM} ${OBJECTDIR}/util/qmath.o.d 
+	@${RM} ${OBJECTDIR}/util/qmath.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  util/qmath.c  -o ${OBJECTDIR}/util/qmath.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/util/qmath.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions -menable-fixed
+	@${FIXDEPS} "${OBJECTDIR}/util/qmath.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/app/main.o: app/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/app" 
@@ -346,6 +353,13 @@ ${OBJECTDIR}/mid/hole.o: mid/hole.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/mid/hole.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/hole.c  -o ${OBJECTDIR}/mid/hole.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/hole.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions -menable-fixed
 	@${FIXDEPS} "${OBJECTDIR}/mid/hole.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/util/qmath.o: util/qmath.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/util" 
+	@${RM} ${OBJECTDIR}/util/qmath.o.d 
+	@${RM} ${OBJECTDIR}/util/qmath.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  util/qmath.c  -o ${OBJECTDIR}/util/qmath.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/util/qmath.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions -menable-fixed
+	@${FIXDEPS} "${OBJECTDIR}/util/qmath.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

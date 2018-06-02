@@ -7,27 +7,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
-#ifndef Q0708
-#define Q0708
-typedef int16_t q0708_t;
-static inline q0708_t q0708(float x){
-    return x>=0?(q0708_t)(x*255.0f):(q0708_t)(x*256.0f);
-}
-static inline float q0708_cast(q0708_t x){
-    return x>=0?(float)x/255.0f:(float)x/256.0f;
-}
-#endif
+#include "qmath.h"
 
-#ifndef Q2308
-#define Q2308
-typedef int32_t q2308_t;
-static inline q2308_t q2308(float x){
-    return x>=0?(q2308_t)(x*255.0f):(q2308_t)(x*256.0f);
-}
-static inline float q2308_cast(q2308_t x){
-    return x>=0?(float)x/255.0f:(float)x/256.0f;
-}
-#endif
 
 struct pidc{
     q0708_t p,i,d;//各種パラメータ

@@ -11,11 +11,14 @@ enum hole{
     HOLE_BC,
     HOLE_C,
     HOLE_CA,
+    HOLE_END,//終端処理用
     HOLE_ERROR
 };
 typedef enum hole hole_t;
 
 void hole_init();
-hole_t hole_sence();
+hole_t hole_sense();
+int hole_diff(hole_t now,hole_t last);//進行度を得る
+
 
 #endif

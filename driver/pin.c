@@ -28,7 +28,7 @@ struct pin_info {
     unsigned : 3;
 };
 typedef struct pin_info pin_info_t;
-const static pin_info_t pin_table[] = {
+const static  pin_info_t pin_table[] = {
     {.exist = false},
     //HA
     {.exist = true, .port = 1, .number = 9, .has_analog = false,

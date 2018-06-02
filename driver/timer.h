@@ -12,10 +12,10 @@ enum timer{
     TIMER2,
     TIMER3
 };
-
 typedef enum timer timer_t;
 
-
 void timer1_init();
+
+
 
 #endif

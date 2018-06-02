@@ -27,6 +27,7 @@
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
         <itemPath>mid/led.h</itemPath>
         <itemPath>mid/unity_system.h</itemPath>
+        <itemPath>mid/hole.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="util" projectFiles="true">
         <itemPath>util/ring.h</itemPath>
@@ -56,6 +57,7 @@
         <itemPath>driver/pin.c</itemPath>
         <itemPath>driver/cn.c</itemPath>
         <itemPath>driver/int.c</itemPath>
+        <itemPath>mid/hole.c</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
         <itemPath>mid/unity_system.c</itemPath>
@@ -72,8 +74,8 @@
       <itemPath>Makefile</itemPath>
       <itemPath>.gitignore</itemPath>
     </logicalFolder>
-    <itemPath>mid/hole.c</itemPath>
-    <itemPath>mid/hole.h</itemPath>
+    <itemPath>util/qmath.c</itemPath>
+    <itemPath>util/qmath.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>driver</Elem>
