@@ -56,13 +56,6 @@ void port_set(port_t);
 void port_clear(port_t);
 void port_toggle(port_t);
 
-//出力先変更
-void port_ppso(pin_t pin, ppso_name_t ppso);
-//入力先変更
-void port_ppsi(pin_t pin, ppsi_name_t ppsi);
-//アナログ
-// flag...trueなら利用する。
-void analog_assign(pin_t pin, bool flag);
 
 
 
@@ -70,7 +63,7 @@ void analog_assign(pin_t pin, bool flag);
 static inline void port_dout(pin_t number) {
     port_t pin = port_cast_pin(number);
     port_direction(pin, false);
-    analog_assign(number, false);
+    pin_set_analog(number, false);
     port_write(pin, true);
 }
 
@@ -78,7 +71,7 @@ static inline void port_dout(pin_t number) {
 static inline void port_din(pin_t number) {
     port_t pin = port_cast_pin(number);
     port_direction(pin, true);
-    analog_assign(number, false);
+    pin_set_analog(number, false);
 
 }
 

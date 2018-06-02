@@ -64,9 +64,9 @@ void uart_init() {
 
     //接続
     port_dout(PIN_TX);
-    port_ppso(PIN_TX, PPSO_U1TX);
+    pin_set_ppso(PIN_TX, PPSO_U1TX);
     port_din(PIN_RX);
-    port_ppsi(PIN_RX, PPSI_U1RX);
+    pin_set_ppsi(PIN_RX, PPSI_U1RX);
 
     //Uartの各種設定
     U1MODEbits.UARTEN = false; //一応、モジュールの電源を切る。

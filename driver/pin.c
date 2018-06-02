@@ -259,3 +259,31 @@ analog_id pin_cast_analog(pin_t id){
         return change_error;
     }
 }
+
+void pin_set_ppso(pin_t pin, ppso_name_t ppso) {
+    if (pin_has_peripheral(pin)) {
+        peripheral_id pid = pin_cast_peripheral(pin);
+        uint8_t* RPRn = (uint8_t*) & RPOR0; //起点を取得
+        if (pid < 26) {//RP25まで存在する(データシートより)
+            RPRn[pid] = ppso;
+        }
+    }
+}
+
+void pin_set_ppsi(pin_t pin, ppsi_name_t ppsi) {
+    if (pin_has_peripheral(pin)) {
+        uint8_t* RPRn = (uint8_t*) & RPINR0;
+        uint16_t idx = (uint16_t) ppsi;
+        if (idx < (uint16_t) PPSI_END) {
+            RPRn[idx] = pin_cast_peripheral(pin);
+        }
+    }
+}
+
+void pin_set_analog(pin_t pin, bool flag) {
+    if (pin_has_analog(pin)) {
+        uint16_t num = pin_cast_analog(pin);
+        uint16_t mask = 1U << num;
+        AD1PCFGL = flag ? AD1PCFGL | mask : AD1PCFGL&~mask;
+    }
+}
