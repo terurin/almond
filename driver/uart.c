@@ -3,6 +3,7 @@
 #include <util/ring.h>
 #include "clock.h"
 #include "port.h"
+#include "config.h"
 //領域設定用定数
 #define TX_BUFFER_SIZE_LOG2 (6)
 #define RX_BUFFER_SIZE_LOG2 (6)
@@ -63,9 +64,9 @@ void uart_init() {
     ring2_init(&rx_ring, rx_buf, RX_BUFFER_SIZE_LOG2);
 
     //接続
-    port_dout(PIN_TX);
+    pin_dout(PIN_TX);
     pin_set_ppso(PIN_TX, PPSO_U1TX);
-    port_din(PIN_RX);
+    pin_din(PIN_RX);
     pin_set_ppsi(PIN_RX, PPSI_U1RX);
 
     //Uartの各種設定
@@ -77,7 +78,7 @@ void uart_init() {
     //割り込み
     IEC0bits.U1TXIE = IEC0bits.U1RXIE =false;//割り込み無効化
     IFS0bits.U1TXIF = IFS0bits.U1RXIF =false;//割り込みフラグ解除
-    IPC3bits.U1TXIP =tx_ip,IPC2bits.U1RXIP = rx_ip;//割り込み優先度設定
+    IPC3bits.U1TXIP =UART_TX_PRI;IPC2bits.U1RXIP = UART_RX_PRI;//割り込み優先度設定
     IEC0bits.U1TXIE =false, IEC0bits.U1RXIE =true;//割り込み有効化
 }
 

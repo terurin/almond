@@ -1,6 +1,7 @@
 #include "pwm.h"
 #include <p33Fxxxx.h>
 #include "clock.h"
+#include "config.h"
 
 
 /* 用語メモ
@@ -227,7 +228,7 @@ void pwm_init() {
     pwm_duty_write_all(0);
     //割り込みを許可する
     IFS3bits.PWM1IF = false;
-    IPC14bits.PWM1IP = 6; //割り込み優先度(up to 7)
+    IPC14bits.PWM1IP = PWM_PRI; //割り込み優先度(up to 7)
     IEC3bits.PWM1IE = false;
     //起動
     PTCONbits.PTEN = true;

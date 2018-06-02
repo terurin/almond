@@ -25,7 +25,7 @@ void port_toggle(port_t);
 
 
 //デジタル出力として設定する
-static inline void port_dout(pin_t number) {
+static inline void pin_dout(pin_t number) {
     port_t pin = port_cast_pin(number);
     port_direction(pin, false);
     pin_set_analog(number, false);
@@ -33,7 +33,7 @@ static inline void port_dout(pin_t number) {
 }
 
 //デジタル入力として設定する。
-static inline void port_din(pin_t number) {
+static inline void pin_din(pin_t number) {
     port_t pin = port_cast_pin(number);
     port_direction(pin, true);
     pin_set_analog(number, false);

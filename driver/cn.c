@@ -1,6 +1,7 @@
 #include "cn.h"
 #include <p33Fxxxx.h>
 #include <util/bits.h>
+#include "config.h"
 //状態変化割り込み
 static change_handle_t callback_handle = NULL;
 static void* callback_object = NULL;
@@ -15,7 +16,7 @@ void change_init() {
     //割り込みを設定する
     IFS1bits.CNIF = false;
     IEC1bits.CNIE = false;
-    IPC4bits.CNIP = 5; //割り込み優先度
+    IPC4bits.CNIP = CN_PRI; //割り込み優先度
 }
 
 void change_pull_up(pin_t pin, bool sw) {

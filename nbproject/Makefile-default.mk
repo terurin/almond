@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/config.c util/ring.c driver/clock.c driver/uart.c mid/led.c driver/timer.c driver/qei.c driver/pwm.c mid/unity_system.c driver/spi.c driver/pin.c driver/cn.c driver/int.c
+SOURCEFILES_QUOTED_IF_SPACED=app/main.c driver/driver.c driver/port.c driver/config.c driver/clock.c driver/uart.c mid/led.c driver/timer.c driver/qei.c driver/pwm.c driver/spi.c driver/pin.c driver/cn.c mid/unity_system.c driver/int.c util/ring.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/driver/timer.o ${OBJECTDIR}/driver/qei.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/mid/unity_system.o ${OBJECTDIR}/driver/spi.o ${OBJECTDIR}/driver/pin.o ${OBJECTDIR}/driver/cn.o ${OBJECTDIR}/driver/int.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/util/ring.o.d ${OBJECTDIR}/driver/clock.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/mid/led.o.d ${OBJECTDIR}/driver/timer.o.d ${OBJECTDIR}/driver/qei.o.d ${OBJECTDIR}/driver/pwm.o.d ${OBJECTDIR}/mid/unity_system.o.d ${OBJECTDIR}/driver/spi.o.d ${OBJECTDIR}/driver/pin.o.d ${OBJECTDIR}/driver/cn.o.d ${OBJECTDIR}/driver/int.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/driver/timer.o ${OBJECTDIR}/driver/qei.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/driver/spi.o ${OBJECTDIR}/driver/pin.o ${OBJECTDIR}/driver/cn.o ${OBJECTDIR}/mid/unity_system.o ${OBJECTDIR}/driver/int.o ${OBJECTDIR}/util/ring.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/app/main.o.d ${OBJECTDIR}/driver/driver.o.d ${OBJECTDIR}/driver/port.o.d ${OBJECTDIR}/driver/config.o.d ${OBJECTDIR}/driver/clock.o.d ${OBJECTDIR}/driver/uart.o.d ${OBJECTDIR}/mid/led.o.d ${OBJECTDIR}/driver/timer.o.d ${OBJECTDIR}/driver/qei.o.d ${OBJECTDIR}/driver/pwm.o.d ${OBJECTDIR}/driver/spi.o.d ${OBJECTDIR}/driver/pin.o.d ${OBJECTDIR}/driver/cn.o.d ${OBJECTDIR}/mid/unity_system.o.d ${OBJECTDIR}/driver/int.o.d ${OBJECTDIR}/util/ring.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/util/ring.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/driver/timer.o ${OBJECTDIR}/driver/qei.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/mid/unity_system.o ${OBJECTDIR}/driver/spi.o ${OBJECTDIR}/driver/pin.o ${OBJECTDIR}/driver/cn.o ${OBJECTDIR}/driver/int.o
+OBJECTFILES=${OBJECTDIR}/app/main.o ${OBJECTDIR}/driver/driver.o ${OBJECTDIR}/driver/port.o ${OBJECTDIR}/driver/config.o ${OBJECTDIR}/driver/clock.o ${OBJECTDIR}/driver/uart.o ${OBJECTDIR}/mid/led.o ${OBJECTDIR}/driver/timer.o ${OBJECTDIR}/driver/qei.o ${OBJECTDIR}/driver/pwm.o ${OBJECTDIR}/driver/spi.o ${OBJECTDIR}/driver/pin.o ${OBJECTDIR}/driver/cn.o ${OBJECTDIR}/mid/unity_system.o ${OBJECTDIR}/driver/int.o ${OBJECTDIR}/util/ring.o
 
 # Source Files
-SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/config.c util/ring.c driver/clock.c driver/uart.c mid/led.c driver/timer.c driver/qei.c driver/pwm.c mid/unity_system.c driver/spi.c driver/pin.c driver/cn.c driver/int.c
+SOURCEFILES=app/main.c driver/driver.c driver/port.c driver/config.c driver/clock.c driver/uart.c mid/led.c driver/timer.c driver/qei.c driver/pwm.c driver/spi.c driver/pin.c driver/cn.c mid/unity_system.c driver/int.c util/ring.c
 
 
 CFLAGS=
@@ -122,13 +122,6 @@ ${OBJECTDIR}/driver/config.o: driver/config.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/config.c  -o ${OBJECTDIR}/driver/config.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/config.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
 	@${FIXDEPS} "${OBJECTDIR}/driver/config.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/util/ring.o: util/ring.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/util" 
-	@${RM} ${OBJECTDIR}/util/ring.o.d 
-	@${RM} ${OBJECTDIR}/util/ring.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  util/ring.c  -o ${OBJECTDIR}/util/ring.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/util/ring.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
-	@${FIXDEPS} "${OBJECTDIR}/util/ring.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 ${OBJECTDIR}/driver/clock.o: driver/clock.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/driver" 
 	@${RM} ${OBJECTDIR}/driver/clock.o.d 
@@ -171,13 +164,6 @@ ${OBJECTDIR}/driver/pwm.o: driver/pwm.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/pwm.c  -o ${OBJECTDIR}/driver/pwm.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/pwm.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
 	@${FIXDEPS} "${OBJECTDIR}/driver/pwm.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/mid/unity_system.o: mid/unity_system.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/mid" 
-	@${RM} ${OBJECTDIR}/mid/unity_system.o.d 
-	@${RM} ${OBJECTDIR}/mid/unity_system.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/unity_system.c  -o ${OBJECTDIR}/mid/unity_system.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/unity_system.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
-	@${FIXDEPS} "${OBJECTDIR}/mid/unity_system.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 ${OBJECTDIR}/driver/spi.o: driver/spi.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/driver" 
 	@${RM} ${OBJECTDIR}/driver/spi.o.d 
@@ -199,12 +185,26 @@ ${OBJECTDIR}/driver/cn.o: driver/cn.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/cn.c  -o ${OBJECTDIR}/driver/cn.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/cn.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
 	@${FIXDEPS} "${OBJECTDIR}/driver/cn.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/mid/unity_system.o: mid/unity_system.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/mid" 
+	@${RM} ${OBJECTDIR}/mid/unity_system.o.d 
+	@${RM} ${OBJECTDIR}/mid/unity_system.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/unity_system.c  -o ${OBJECTDIR}/mid/unity_system.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/unity_system.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
+	@${FIXDEPS} "${OBJECTDIR}/mid/unity_system.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 ${OBJECTDIR}/driver/int.o: driver/int.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/driver" 
 	@${RM} ${OBJECTDIR}/driver/int.o.d 
 	@${RM} ${OBJECTDIR}/driver/int.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/int.c  -o ${OBJECTDIR}/driver/int.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/int.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
 	@${FIXDEPS} "${OBJECTDIR}/driver/int.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/util/ring.o: util/ring.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/util" 
+	@${RM} ${OBJECTDIR}/util/ring.o.d 
+	@${RM} ${OBJECTDIR}/util/ring.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  util/ring.c  -o ${OBJECTDIR}/util/ring.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/util/ring.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
+	@${FIXDEPS} "${OBJECTDIR}/util/ring.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 else
 ${OBJECTDIR}/app/main.o: app/main.c  nbproject/Makefile-${CND_CONF}.mk
@@ -234,13 +234,6 @@ ${OBJECTDIR}/driver/config.o: driver/config.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/driver/config.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/config.c  -o ${OBJECTDIR}/driver/config.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/config.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
 	@${FIXDEPS} "${OBJECTDIR}/driver/config.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/util/ring.o: util/ring.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/util" 
-	@${RM} ${OBJECTDIR}/util/ring.o.d 
-	@${RM} ${OBJECTDIR}/util/ring.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  util/ring.c  -o ${OBJECTDIR}/util/ring.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/util/ring.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
-	@${FIXDEPS} "${OBJECTDIR}/util/ring.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/driver/clock.o: driver/clock.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/driver" 
@@ -284,13 +277,6 @@ ${OBJECTDIR}/driver/pwm.o: driver/pwm.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/pwm.c  -o ${OBJECTDIR}/driver/pwm.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/pwm.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
 	@${FIXDEPS} "${OBJECTDIR}/driver/pwm.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/mid/unity_system.o: mid/unity_system.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/mid" 
-	@${RM} ${OBJECTDIR}/mid/unity_system.o.d 
-	@${RM} ${OBJECTDIR}/mid/unity_system.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/unity_system.c  -o ${OBJECTDIR}/mid/unity_system.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/unity_system.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
-	@${FIXDEPS} "${OBJECTDIR}/mid/unity_system.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 ${OBJECTDIR}/driver/spi.o: driver/spi.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/driver" 
 	@${RM} ${OBJECTDIR}/driver/spi.o.d 
@@ -312,12 +298,26 @@ ${OBJECTDIR}/driver/cn.o: driver/cn.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/cn.c  -o ${OBJECTDIR}/driver/cn.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/cn.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
 	@${FIXDEPS} "${OBJECTDIR}/driver/cn.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/mid/unity_system.o: mid/unity_system.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/mid" 
+	@${RM} ${OBJECTDIR}/mid/unity_system.o.d 
+	@${RM} ${OBJECTDIR}/mid/unity_system.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  mid/unity_system.c  -o ${OBJECTDIR}/mid/unity_system.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mid/unity_system.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
+	@${FIXDEPS} "${OBJECTDIR}/mid/unity_system.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 ${OBJECTDIR}/driver/int.o: driver/int.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/driver" 
 	@${RM} ${OBJECTDIR}/driver/int.o.d 
 	@${RM} ${OBJECTDIR}/driver/int.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  driver/int.c  -o ${OBJECTDIR}/driver/int.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/driver/int.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
 	@${FIXDEPS} "${OBJECTDIR}/driver/int.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/util/ring.o: util/ring.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/util" 
+	@${RM} ${OBJECTDIR}/util/ring.o.d 
+	@${RM} ${OBJECTDIR}/util/ring.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  util/ring.c  -o ${OBJECTDIR}/util/ring.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/util/ring.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"." -msmart-io=1 -Wall -msfr-warn=off   -Wall -finline-functions
+	@${FIXDEPS} "${OBJECTDIR}/util/ring.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
