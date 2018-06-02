@@ -6,7 +6,6 @@
 #include "config.h"
 #include <util/ring.h>
 static const uint16_t error_code = 0xffff;
-static const uint16_t empty_code =0xfffe;
 
 #define TX_SIZE_LOG2 (4)
 #define RX_SIZE_LOG2 (4)
@@ -75,6 +74,24 @@ void spi_init(){
     
 }
 
+uint16_t spi_putw(uint16_t w){
+    return ring2_putw(&tx_ring,w);
+}
+
+bool spi_full(){
+    return ring2_full(&tx_ring);
+}
+
+uint16_t spi_getw(){
+    return ring2_getw(&rx_ring);
+}
+bool spi_empty(){
+    return ring2_used(&rx_ring)<sizeof(uint16_t);
+}
+
+
+
+
 //異常発生時(今は使っていない)
 void __attribute__((interrupt, auto_psv)) _SPI1ErrInterrupt(){
     IFS0bits.SPI1EIF=false;
@@ -82,8 +99,9 @@ void __attribute__((interrupt, auto_psv)) _SPI1ErrInterrupt(){
 
 //通常転送時
 void __attribute__((interrupt, auto_psv)) _SPI1Interrupt(){
-    
-    
-    
+    //read and write
+    ring2_putw(&rx_ring,SPI1BUF);
+    SPI1BUF= ring2_getw(&rx_ring);
+    //clear flag
     IFS0bits.SPI1IF=false;
 }
