@@ -10,8 +10,8 @@
 
 
 //SPI 割り込み優先度
-#define SPI_TRANCEMIT_PRI (5) 
-#define SPI_ERROR_PRI (6)
+#define SPI_TRANCEMIT_PRI (4) 
+#define SPI_ERROR_PRI (5) //使っていない
 
 //UART 割り込み優先度
 #define UART_TX_PRI (2) 
@@ -21,7 +21,7 @@
 #define PWM_PRI (7)
 
 //状態変化割り込み優先度
-#define CN_PRI (1)
+#define CN_PRI (6)
 
 //INT 割り込み優先度
 

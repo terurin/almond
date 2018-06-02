@@ -108,7 +108,7 @@ struct port{
 typedef struct port port_t;
 extern const port_t pin_pair_error;
 bool pin_has_port(pin_t);
-port_t port_cast_pin(pin_t);
+port_t pin_cast_port(pin_t);
 static inline bool port_check(port_t pair ){
     return (pair.number!=pin_pair_error.number)&&(pair.port!=pin_pair_error.port);//正常ならtrue
 }

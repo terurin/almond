@@ -1,6 +1,6 @@
 #include "unity_system.h"
 #include <stddef.h>
-#define RECORD_SIZE 16
+#define RECORD_SIZE 16 //内部で管理する領域の大きさ
 struct us_record{
     us_write_handle_t write;
     us_read_handle_t read;

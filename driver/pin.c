@@ -180,7 +180,7 @@ bool pin_has_port(pin_t id) {
     }
 }
 
-port_t port_cast_pin(pin_t id) {
+port_t pin_cast_port(pin_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         if (info->exist) {

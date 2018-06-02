@@ -11,7 +11,7 @@ void led_init() {
     uint16_t idx;
     for (idx = 0; idx < LED_END; idx++) {
         pin_t number  = table[idx];
-        port_t pin = port_cast_pin(number);
+        port_t pin = pin_cast_port(number);
         //消灯
         port_direction(pin,false);
         pin_set_analog(number,false);
