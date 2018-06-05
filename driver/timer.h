@@ -6,15 +6,16 @@
 #pragma once
 #ifndef DRIVER_TIMER_HEADER_GUARD
 #define DRIVER_TIMER_HEADER_GUARD
+#include <stdint.h>
+//timer 1 制御用(16bit)
+//timer 23 時間計測用(32bit)
 
-enum timer{
-    TIMER1=0,
-    TIMER2,
-    TIMER3
-};
-typedef enum timer timer_t;
+typedef uint32_t clock_t;
 
-void timer1_init();
+void timer23_init();
+clock_t timer23_clock();
+
+clock_t clock_diff(clock_t now, clock_t last);
 
 
 

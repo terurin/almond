@@ -32,6 +32,8 @@
       <logicalFolder name="f1" displayName="util" projectFiles="true">
         <itemPath>util/ring.h</itemPath>
         <itemPath>util/pidc.h</itemPath>
+        <itemPath>util/qmath.h</itemPath>
+        <itemPath>util/bits.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -66,6 +68,7 @@
       <logicalFolder name="f1" displayName="util" projectFiles="true">
         <itemPath>util/ring.c</itemPath>
         <itemPath>util/pidc.c</itemPath>
+        <itemPath>util/qmath.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -74,15 +77,7 @@
       <itemPath>Makefile</itemPath>
       <itemPath>.gitignore</itemPath>
     </logicalFolder>
-    <itemPath>util/qmath.c</itemPath>
-    <itemPath>util/qmath.h</itemPath>
   </logicalFolder>
-  <sourceRootList>
-    <Elem>driver</Elem>
-    <Elem>mid</Elem>
-    <Elem>doc</Elem>
-    <Elem>util</Elem>
-  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">

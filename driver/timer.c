@@ -7,7 +7,3 @@
 
 
 
-void timer1_init(timer_t tmr){
-    
-    
-}
