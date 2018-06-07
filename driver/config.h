@@ -25,7 +25,8 @@
 
 //INT 割り込み優先度
 
-
+//TIMER 割り込み優先度
+#define TMR23_PRI (1)
 
 
 #endif

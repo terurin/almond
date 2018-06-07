@@ -6,9 +6,11 @@
 #include "cn.h"
 #include "int.h"
 #include "qei.h"
-
+#include "timer.h"
 int driver_init(){
+    timer23_init();
     clock_init();
+    
     pwm_init();
     int_init();
     change_init();

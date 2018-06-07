@@ -32,8 +32,8 @@
       <logicalFolder name="f1" displayName="util" projectFiles="true">
         <itemPath>util/ring.h</itemPath>
         <itemPath>util/pidc.h</itemPath>
-        <itemPath>util/qmath.h</itemPath>
         <itemPath>util/bits.h</itemPath>
+        <itemPath>util/qmath.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -78,6 +78,12 @@
       <itemPath>.gitignore</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>driver</Elem>
+    <Elem>mid</Elem>
+    <Elem>doc</Elem>
+    <Elem>util</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
