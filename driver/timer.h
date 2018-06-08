@@ -57,8 +57,13 @@ static inline tick_t tick_diff(tick_t now,tick_t last){
 
 //timer 1 制御用(16bit)
 //timer 23 時間計測用(32bit)
+//typedef void (*timer_handler_t)(void *obj);
+//void timer1_init();
+
+
 void timer23_init();
 tick_t timer23_clock();
+
 
 
 

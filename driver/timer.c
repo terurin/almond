@@ -12,8 +12,31 @@ const tick_t tick_max= FCY*60;//60s=1min
 uint16_t timer23_minutes;//[min]
 
 //マクロ
+#define T1_FLAG(x) IFS0bits.T1IF=(x)
 #define T2_FLAG(x) IFS0bits.T2IF=(x)
 
+
+/*
+void timer1_init(){
+    const T1CONBITS con ={
+      .TON=false,
+      .TSIDL=false,//running at idel
+      .TGATE=false,
+      .TCKPS=0,//priscaler 1:1
+      .TSYNC=false,
+      .TCS=false//internal clock
+    };
+    
+    //設定
+    T1CONbits=con;
+    TMR1=0;
+    //PR1=
+    //割り込み設定
+    T1_FLAG(false);
+    IEC0bits.T2IE=false;
+    IPC0bits.T1IP=TMR1_PRI;
+}
+*/
 void timer23_init(){
     
     //Timer 2,3ともに利用する
@@ -40,6 +63,10 @@ void timer23_init(){
     //タイマー起動
     T2CONbits.TON=true;
 }
+
+
+
+
 
 tick_t timer23_clock(){
     return (uint32_t)TMR3<<16|TMR2;

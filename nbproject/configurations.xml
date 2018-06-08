@@ -77,6 +77,8 @@
       <itemPath>Makefile</itemPath>
       <itemPath>.gitignore</itemPath>
     </logicalFolder>
+    <itemPath>driver/adc.c</itemPath>
+    <itemPath>driver/adc.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>driver</Elem>

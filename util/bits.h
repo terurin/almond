@@ -30,6 +30,12 @@ static inline bool bits_read_width(uint16_t target, uint16_t width, uint16_t num
     return width_mask & (target >> number);
 }
 
+static inline void bits_write(uint16_t* target,uint16_t number,bool value){
+    const uint16_t mask=1u<<number;
+    uint16_t tmp=*target;
+    *target=value?tmp|mask:tmp&~mask;
+}
+
 
 
 #endif
