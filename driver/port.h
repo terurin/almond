@@ -28,7 +28,7 @@ void port_toggle(port_t);
 static inline void pin_dout(pin_t number) {
     port_t pin = pin_cast_port(number);
     port_direction(pin, false);
-    pin_set_analog(number, false);
+    //pin_set_analog(number, false);
     port_write(pin, true);
 }
 
@@ -36,7 +36,7 @@ static inline void pin_dout(pin_t number) {
 static inline void pin_din(pin_t number) {
     port_t pin = pin_cast_port(number);
     port_direction(pin, true);
-    pin_set_analog(number, false);
+    //pin_set_analog(number, false);
 
 }
 

@@ -146,7 +146,7 @@ void pin_set_ppso(pin_t pin, ppso_name_t ppso);
 void pin_set_ppsi(pin_t pin, ppsi_name_t ppsi);
 //アナログ
 // flag...trueなら利用する。
-void pin_set_analog(pin_t pin, bool flag);
+//void pin_set_analog(pin_t pin, bool flag);
 
 
 #endif

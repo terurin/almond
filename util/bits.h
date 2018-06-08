@@ -36,6 +36,34 @@ static inline void bits_write(uint16_t* target,uint16_t number,bool value){
     *target=value?tmp|mask:tmp&~mask;
 }
 
+static inline void bits_set_reg(volatile uint16_t* target,uint16_t number){
+    const uint16_t mask=1u<<number;
+    *target|=mask;
+}
+
+static inline void bits_clear_reg(volatile uint16_t* target,uint16_t number){
+    const uint16_t mask=1u<<number;
+    *target&=~mask;
+}
+
+static inline void bits2_set_reg(volatile uint16_t* h,volatile uint16_t *l,uint16_t number){
+    uint16_t mask = 1u<<(number&0x0f);
+    volatile uint16_t *target =(number&0x10)?h:l;
+    *target |= mask;
+}
+
+static inline void bits2_clr_reg(volatile uint16_t* h,volatile uint16_t *l,uint16_t number){
+    uint16_t mask = 1u<<(number&0x0f);
+    volatile uint16_t *target =(number&0x10)?h:l;
+    *target &= ~mask;
+}
+
+static inline void bits2_write_reg(volatile uint16_t* h,volatile uint16_t *l,uint16_t number,bool value){
+    uint16_t mask = 1u<<(number&0x0f);
+    volatile uint16_t *target =(number&0x10)?h:l;
+    *target= value?*target|mask:*target&~mask;
+}
+
 
 
 #endif

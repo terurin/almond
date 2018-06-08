@@ -17,8 +17,8 @@ struct pin_info {
     unsigned :1;
     unsigned exist : 1;
     unsigned analog : 4;
-    unsigned has_analog : 1;
     unsigned : 3;
+    unsigned has_analog : 1;
     //2Word
     unsigned peripheral : 5;
     unsigned has_peripheral : 1;
@@ -279,11 +279,11 @@ void pin_set_ppsi(pin_t pin, ppsi_name_t ppsi) {
         }
     }
 }
-
+/*
 void pin_set_analog(pin_t pin, bool flag) {
     if (pin_has_analog(pin)) {
         uint16_t num = pin_cast_analog(pin);
         uint16_t mask = 1U << num;
         AD1PCFGL = flag ? AD1PCFGL | mask : AD1PCFGL&~mask;
     }
-}
+}*/
