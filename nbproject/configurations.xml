@@ -80,12 +80,6 @@
     <itemPath>driver/adc.c</itemPath>
     <itemPath>driver/adc.h</itemPath>
   </logicalFolder>
-  <sourceRootList>
-    <Elem>driver</Elem>
-    <Elem>mid</Elem>
-    <Elem>doc</Elem>
-    <Elem>util</Elem>
-  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">

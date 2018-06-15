@@ -3,10 +3,11 @@
 #include <util/bits.h>
 #include "config.h"
 #include <util/ring.h>
-#include <stdlib.h>
+#include <string.h>
+#include "pin.h"
 // 仕様　VM,CA,CB,CCを設定
-
 #define CHANNEL_SIZE (4)
+#define CHANNEL_LENGTH (16)
 static analog_id id_list[CHANNEL_SIZE];
 //技術ノート
 //TRC = 250 ns 
@@ -22,12 +23,12 @@ static analog_id id_list[CHANNEL_SIZE];
 //TAD = FCY(=25 ns) * 50 = 500 ns = 0.5 us 
 //TSAMP = TAD(=0.5 us) * 5 = 2.5 us -> 400 kHz
 
-static int analog_id_compare(const void* a, const void* b) {
-    return *(analog_id*) a - *(analog_id*) b;
-}
+//内部バッファ
+uint16_t results[CHANNEL_SIZE][CHANNEL_LENGTH];
+uint16_t indexs[CHANNEL_SIZE];
 
-
-
+//ADC Result Buffer Alias
+static const volatile  uint16_t* buffers=&ADC1BUF0;
 
 
 void adc_init() {
@@ -59,14 +60,14 @@ void adc_init() {
         .ADCS = 49 // TAD = (n+1)* TCY, n is 6 bit
     };
     int idx = 0;
-    //管理領域初期化
+    //管理領域初期化(制約　analog idの昇順に設定すること)
     id_list[idx++] = pin_cast_analog(PIN_VM);
     id_list[idx++] = pin_cast_analog(PIN_CA);
     id_list[idx++] = pin_cast_analog(PIN_CB);
     id_list[idx] = pin_cast_analog(PIN_CC);
-    //ソートする
-    qsort(id_list, CHANNEL_SIZE, sizeof (change_id), analog_id_compare);
-
+    memset(results,0,sizeof(results));
+    memset(indexs,0,sizeof(indexs));
+    
     //入力設定
     AD1PCFGL = 0xffff; //すべてデジタルピンに変更する
     AD1CSSL = 0; //何もスキャンしない
@@ -89,9 +90,25 @@ void adc_init() {
     AD1CON1bits.ADON = true;
 }
 
+uint16_t adc_read_raw_now(adc_channel_id aid){
+    return results[aid][indexs[aid]];
+}
+
+
+
+
+
 void __attribute__((interrupt, no_auto_psv)) _ADC1Interrupt() {
-    
-
-
+    //一気に読み込み
+    uint16_t idx,next;
+    adc_channel_id aid;
+    for (idx=0;idx<16;idx++){
+        //load
+        aid=idx&0x3;
+        results[aid][indexs[aid]]=buffers[idx];
+        //update
+        next = indexs[aid]+1;
+        indexs[aid]= next <CHANNEL_LENGTH?next:0;
+    }
     IFS0bits.AD1IF = false;
 }
