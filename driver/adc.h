@@ -18,7 +18,12 @@ void adc_init();
 
 uint16_t adc_read_raw_now(adc_channel_id);//最新の状態のみ取得
 
-uint16_t adc_read_raw(adc_channel_id);
+uint16_t adc_read_raw(adc_channel_id);//フィルターを書けられた値
+uint32_t adc_read(adc_channel_id);//フィルターを書けられた値
+
+
+
+
 
 
 #endif

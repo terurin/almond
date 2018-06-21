@@ -17,7 +17,7 @@
 
 //各種設定
 #define KHZ (1000)
-static const uint32_t cycle = (10.0f * KHZ);
+static const uint32_t cycle = (50.0f * KHZ);
 static uint16_t period = 0; //制御周期
 static fractional duty_min = Q15(0.1); //duty比の下限(安全対策)
 #define UP_DOWN (false) //PWMの動作モード　アップダウンならtrue,フリーランならfalse
