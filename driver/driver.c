@@ -7,6 +7,7 @@
 #include "int.h"
 #include "qei.h"
 #include "timer.h"
+#include "adc.h"
 int driver_init(){
     timer23_init();
     clock_init();
@@ -17,6 +18,8 @@ int driver_init(){
     
     uart_init();
     qei_init();
+    
+    adc_init();
     return 0;
 }
 
