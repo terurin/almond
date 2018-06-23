@@ -3,7 +3,8 @@
 #include <util/bits.h>
 #include "config.h"
 #include <util/ring.h>
-#include <string.h>
+#include <util/filter.h>
+#include <math.h>
 #include "pin.h"
 // 仕様　VM,CA,CB,CCを設定
 #define CHANNEL_SIZE (4)
@@ -28,17 +29,22 @@ static analog_id id_list[CHANNEL_SIZE];
 //内部バッファ
 static uint16_t results[CHANNEL_SIZE][CHANNEL_LENGTH];
 static uint16_t result_index;//次に書き込まれる場所
-static inline uint16_t result_last(change_id id,size_t n){
-    size_t m = (CHANNEL_LENGTH+result_index-n-1)%CHANNEL_LENGTH;
-    return results[id][m];
-}
 
-//ADC Result Buffer Alias
-static const volatile  uint16_t* buffer_alias=&ADC1BUF0;
+//FIRフィルタ構成データ
+#define FIR_SIZE 3
+static const uint16_t fir_filter[FIR_SIZE]={100,100,8};
 
-//
-#define QCAST(x,s) (x)*((1<<s)-1)
-static uint16_t vref = QCAST(2.5,4);
+//入力電圧係数
+//Q-Format変換用のマクロ, xは被変換数,sはフォーマット形式
+#define QCAST(x,s) (x)*((1<<s)-1) 
+#define GAIN_FORMAT (4)
+static const uint16_t vref_gain = QCAST(2.5,GAIN_FORMAT);
+static const uint16_t vin_gains[CHANNEL_SIZE]={
+    QCAST(12,GAIN_FORMAT),
+    QCAST(1,GAIN_FORMAT),
+    QCAST(1,GAIN_FORMAT),
+    QCAST(1,GAIN_FORMAT)
+};
 
 void adc_init() {
     //定数定義
@@ -100,30 +106,52 @@ void adc_init() {
     AD1CON1bits.ADON = true;
 }
 
-uint16_t adc_read_raw_now(adc_channel_id aid){
+uint16_t adc_read_direct(adc_channel_id aid){
     return results[aid][result_index];
 }
 
-uint16_t adc_read_raw(adc_channel_id id){
-    const uint16_t *list = results[id];
-    //過去4回分の値を参照する。
-    
-    
-    
-    
-    
+
+//データ列をコピーする。
+uint16_t* adc_copy(adc_channel_id id,uint16_t* dest,size_t count){
+    const uint16_t* result = results[id]; 
+    uint16_t *it=dest;//destination buffer's iterator
+    uint16_t start=(result_index-1+CHANNEL_LENGTH)%CHANNEL_LENGTH;
+    uint16_t end =(result_index-1-count-CHANNEL_LENGTH)&CHANNEL_LENGTH;
+    uint16_t pos;//ring buffer's position
+    //ring_bufferなので折返しを考慮する。
+    if (start>end){
+        for (pos=start;pos<CHANNEL_LENGTH;pos++){
+            *(it++)=result[pos];
+        }
+        start=0;
+    }
+    for (pos=start;pos<end;pos++){
+         *(it++)=result[pos];
+    }
+    return dest;
 }
 
+uint16_t adc_read_raw(adc_channel_id id){
+    uint16_t data[FIR_SIZE];
+    adc_copy(id,data,FIR_SIZE);
+    return filter_fir(data,fir_filter,FIR_SIZE);
+}
 
+uint16_t adc_read(adc_channel_id id){
+    uint16_t rate = adc_read_raw(id);//Q16-Format
+    uint16_t gain = vref_gain*vin_gains[id];//Q8-Format,Q4*Q4=Q8
+    uint32_t raw =(uint32_t)rate*(uint32_t)gain;//Q24
+    return raw>>14;//Q10, 24-14
+}
 
 void __attribute__((interrupt, no_auto_psv)) _ADC1Interrupt() {
     //使うべきバッファを選択する
-    volatile  uint16_t* buf =  AD1CON2bits.BUFS?buffer_alias+8:buffer_alias;
+    volatile uint16_t* buf =  AD1CON2bits.BUFS?&ADC1BUF8:&ADC1BUF0;
     uint16_t idx;
     change_id ch=0;
     for (idx=0;idx<8;idx++){
         //store
-        results[ch][result_index]=buffer_alias[idx];
+        results[ch][result_index]=buf[idx];
         //update
         if ((++ch)==CHANNEL_SIZE){
             uint16_t next= result_index+1;

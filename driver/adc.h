@@ -4,6 +4,9 @@
 #ifndef __DRIVER_ADC_HEADER_GUARD__
 #define __DRIVER_ADC_HEADER_GUARD__
 
+#include <stddef.h>
+
+
 enum adc_channel{
     ADC_CHANNEL_VM=0,
     ADC_CHANNEL_CA,
@@ -16,11 +19,15 @@ typedef enum adc_channel adc_channel_id;
 
 void adc_init();
 
-uint16_t adc_read_raw_now(adc_channel_id);//最新の状態のみ取得
-
+//最新の生な値を返す
+uint16_t adc_read_direct(adc_channel_id);
+//ring bufferの値を配列に変換して格納
+//制約 count < CHANNEL_LENGTHを満たすこと
+uint16_t* adc_copy(adc_channel_id id,uint16_t* dest,size_t count);
+//FIRフィルターを掛けられた値(100kHz)
 uint16_t adc_read_raw(adc_channel_id);//フィルターを書けられた値
-uint32_t adc_read(adc_channel_id);//フィルターを書けられた値
-
+//FIRフィルターを掛けた電圧(Q10-Format)
+uint16_t adc_read(adc_channel_id);//フィルターを書けられた値
 
 
 
