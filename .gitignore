@@ -1,10 +1,10 @@
 #生成物破棄
-/build
-/dist
-/debug
-/disassembly
+/build/
+/dist/
+/debug/
+/disassembly/
+/doc/
 /nbproject/*.mk
 /nbproject/*.properties
 /nbproject/*.bash
 /nbproject/private
-
