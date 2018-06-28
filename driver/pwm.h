@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <dsp.h>
+#include <util/dsp_type.h>
 
 //PWM1 Moduleについて記載する
 
@@ -31,7 +31,7 @@ enum pwm_pole_name {
     PWM_POLE_A = 0,
     PWM_POLE_B,
     PWM_POLE_C,
-    PWM_POLE_END
+    PWM_POLE_END//終端処理
 };
 typedef enum pwm_pole_name pwm_pole_id;
 
@@ -40,27 +40,14 @@ uint32_t pwm_cycle(); //pwmの制御周波数を取得
 uint16_t pwm_period(); //pwmの制御周期を取得
 //指定した動作波形モードに移行する
 void pwm_state(pwm_state_name_t);
-//指定したduty比に遷移する 
+//指定したパルス幅に遷移する 
 void pwm_duty_write(pwm_pole_id id, uint16_t value);
+void pwm_duty_write_all(uint16_t value);
+//指定した比率に設定する
+void pwm_rate_write(pwm_pole_id id,q15_t rate);//(Q16 Format)
+void pwm_rate_write_all(q15_t rate);
+void pwm_rate_each(q15_t a, q15_t b, q15_t c);
 
-static inline void pwm_duty_write_all(uint16_t value) {
-    pwm_duty_write(PWM_POLE_A, value);
-    pwm_duty_write(PWM_POLE_B, value);
-    pwm_duty_write(PWM_POLE_C, value);
-}
-void pwm_rate_write(pwm_pole_id id,fractional rate);//(Q0.15 Format)
-void pwm_rate_write_all(fractional rate);
-static inline void pwm_rate_each(fractional a, fractional b, fractional c){
-    pwm_rate_write(PWM_POLE_A,a);
-    pwm_rate_write(PWM_POLE_B,b);
-    pwm_rate_write(PWM_POLE_C,c);
-            
-    
-}
-
-pwm_state_name_t pwm_state_front(pwm_state_name_t);
-pwm_state_name_t pwm_state_back(pwm_state_name_t);
-pwm_state_name_t pwm_state_hold(pwm_state_name_t x);
 
 typedef void (pwm_handler_t(void*));
 void pwm_event(pwm_handler_t, void*); //割り込みに関数ポインタを登録

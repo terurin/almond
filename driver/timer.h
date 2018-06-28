@@ -62,7 +62,7 @@ static inline tick_t tick_diff(tick_t now,tick_t last){
 
 
 void timer23_init();
-tick_t timer23_clock();
+tick_t timer23_tick();
 
 
 

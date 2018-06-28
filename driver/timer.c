@@ -68,7 +68,7 @@ void timer23_init(){
 
 
 
-tick_t timer23_clock(){
+tick_t timer23_tick(){
     return (uint32_t)TMR3<<16|TMR2;
 }
 

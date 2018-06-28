@@ -2,8 +2,8 @@
 <configurationDescriptor version="62">
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <logicalFolder name="f1" displayName="Document Files" projectFiles="true">
-      <itemPath>doc/dspic33f32mc204.pdf</itemPath>
-      <itemPath>doc/dsPIC33F_Datasheet_J.pdf</itemPath>
+      <itemPath>license.md</itemPath>
+      <itemPath>readme.md</itemPath>
     </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -30,6 +30,7 @@
         <itemPath>mid/unity_system.h</itemPath>
         <itemPath>mid/hole.h</itemPath>
         <itemPath>mid/motor.h</itemPath>
+        <itemPath>mid/bcomm.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="util" projectFiles="true">
         <itemPath>util/ring.h</itemPath>
@@ -37,6 +38,7 @@
         <itemPath>util/bits.h</itemPath>
         <itemPath>util/qmath.h</itemPath>
         <itemPath>util/filter.h</itemPath>
+        <itemPath>util/dsp_type.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -62,13 +64,14 @@
         <itemPath>driver/pin.c</itemPath>
         <itemPath>driver/cn.c</itemPath>
         <itemPath>driver/int.c</itemPath>
-        <itemPath>mid/hole.c</itemPath>
         <itemPath>driver/adc.c</itemPath>
       </logicalFolder>
       <logicalFolder name="mid" displayName="mid" projectFiles="true">
         <itemPath>mid/unity_system.c</itemPath>
         <itemPath>mid/led.c</itemPath>
         <itemPath>mid/motor.c</itemPath>
+        <itemPath>mid/bcomm.c</itemPath>
+        <itemPath>mid/hole.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="util" projectFiles="true">
         <itemPath>util/ring.c</itemPath>
@@ -82,7 +85,6 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
       <itemPath>.gitignore</itemPath>
-      <itemPath>readme.md</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>

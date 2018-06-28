@@ -3,7 +3,7 @@
 /dist/
 /debug/
 /disassembly/
-/doc/
+/doc/*.pdf
 /nbproject/*.mk
 /nbproject/*.properties
 /nbproject/*.bash
