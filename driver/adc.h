@@ -5,7 +5,7 @@
 #define __DRIVER_ADC_HEADER_GUARD__
 
 #include <stddef.h>
-
+#include <util/dsp_type.h>
 
 enum adc_channel{
     ADC_CHANNEL_VM=0,
@@ -27,7 +27,7 @@ uint16_t* adc_copy(adc_channel_id id,uint16_t* dest,size_t count);
 //FIRフィルターを掛けられた値(100kHz)
 uint16_t adc_read_raw(adc_channel_id);//フィルターを書けられた値
 //FIRフィルターを掛けた電圧(Q10-Format)
-uint16_t adc_read(adc_channel_id);//フィルターを書けられた値
+q0610_t adc_read(adc_channel_id);//フィルターを書けられた値
 
 
 

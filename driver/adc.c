@@ -4,6 +4,7 @@
 #include "config.h"
 #include <util/ring.h>
 #include <util/filter.h>
+#include <util/qmath.h>
 #include <math.h>
 #include "pin.h"
 // 仕様　VM,CA,CB,CCを設定
@@ -35,8 +36,8 @@ static uint16_t result_index;//次に書き込まれる場所
 static const uint16_t fir_filter[FIR_SIZE]={100,100,8};
 
 //入力電圧係数
-//Q-Format変換用のマクロ, xは被変換数,sはフォーマット形式
-#define QCAST(x,s) (x)*((1<<s)-1) 
+
+
 #define GAIN_FORMAT (4)
 static const uint16_t vref_gain = QCAST(2.5,GAIN_FORMAT);
 static const uint16_t vin_gains[CHANNEL_SIZE]={
@@ -137,7 +138,7 @@ uint16_t adc_read_raw(adc_channel_id id){
     return filter_fir(data,fir_filter,FIR_SIZE);
 }
 
-uint16_t adc_read(adc_channel_id id){
+q0610_t adc_read(adc_channel_id id){
     uint16_t rate = adc_read_raw(id);//Q16-Format
     uint16_t gain = vref_gain*vin_gains[id];//Q8-Format,Q4*Q4=Q8
     uint32_t raw =(uint32_t)rate*(uint32_t)gain;//Q24

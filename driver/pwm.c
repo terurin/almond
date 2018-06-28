@@ -2,7 +2,7 @@
 #include <p33Fxxxx.h>
 #include "clock.h"
 #include "config.h"
-
+#include <util/qmath.h>
 
 /* 用語メモ
  * HB ... Half Bridge の略 (H,L,Free の三つの状態がある) 
@@ -19,7 +19,8 @@
 #define KHZ (1000)
 static const uint32_t cycle = (50.0f * KHZ);
 static uint16_t period = 0; //制御周期
-static fractional duty_min = Q15(0.1); //duty比の下限(安全対策)
+static q15_t duty_max =QCAST(0.9f,15); //dutyの上限
+static q15_t duty_min = QCAST(0.1f,15); //duty比の下限(安全対策)
 #define UP_DOWN (false) //PWMの動作モード　アップダウンならtrue,フリーランならfalse
 //内部テーブル
 static volatile uint16_t *const  dc_table[] = {&P1DC1, &P1DC2, &P1DC3};
@@ -29,11 +30,15 @@ static pwm_handler_t* callback_handler = NULL;
 static void *callback_object = NULL;
 
 //制限関数
-static inline uint16_t clip(fractional rate) {
-    if (rate > duty_min) {
+static inline uint16_t clip(q0016_t rate) {
+    bool up= rate>duty_max;
+    bool down = rate<duty_min;
+    if (!up&!down) {
         uint16_t duty = ((uint32_t) period * rate) >> 14;
         return duty;
-    } else {
+    } else if (up){
+        return duty_max;
+    }else {
         //stop motor because duty is too few
         return 0;
     }
@@ -157,11 +162,6 @@ static inline uint16_t period_up_down() {
     return (uint16_t) (clock_fcy() / (cycle * 2) - 1);
 }
 
-//なぜか見つからなかったので定義
-
-static inline fractional fract_max(fractional a, fractional b) {
-    return a > b ? a : b;
-}
 
 void pwm_init() {
     //定数定義
@@ -262,43 +262,25 @@ void pwm_duty_write(pwm_pole_id id,uint16_t value){
     }
 }
 
-void pwm_rate_write(pwm_pole_id id,fractional rate){
+void pwm_duty_write_all(uint16_t value) {
+    size_t idx;
+    for (idx=0;idx<(sizeof(dc_table[0])/sizeof(dc_table));idx++){
+        *dc_table[idx]=value;
+    }
+}
+
+void pwm_rate_write(pwm_pole_id id,q15_t rate){
     pwm_duty_write(id,clip(rate));
 }
 
-void pwm_rate_write_all(fractional rate){
+void pwm_rate_write_all(q15_t rate){
     pwm_duty_write_all(clip(rate));
 }
 
-
-
-pwm_state_name_t pwm_state_front(pwm_state_name_t state) {
-    if (state < PWM_STATE_END) {
-        if (state != PWM_STATE_CB) {
-            return state + 1;
-        } else {
-            return PWM_STATE_AB;
-        }
-    } else {
-        return state;
-    }
-}
-
-pwm_state_name_t pwm_state_back(pwm_state_name_t state) {
-    if (state < PWM_STATE_END) {
-        if (state != PWM_STATE_AB) {
-            return state - 1;
-        } else {
-            return PWM_STATE_CB;
-        }
-    } else {
-        return state;
-    }
-
-}
-
-pwm_state_name_t pwm_state_hold(pwm_state_name_t state) {
-    return state;
+void pwm_rate_each(q15_t a, q15_t b, q15_t c){
+    *dc_table[PWM_POLE_A]=clip(a);
+    *dc_table[PWM_POLE_B]=clip(b);
+    *dc_table[PWM_POLE_C]=clip(c);
 }
 
 void pwm_event(pwm_handler_t hwnd, void* obj) {
