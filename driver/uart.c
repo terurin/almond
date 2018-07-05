@@ -64,10 +64,10 @@ void uart_init() {
     ring2_init(&rx_ring, rx_buf, RX_BUFFER_SIZE_LOG2);
 
     //接続
-    pin_dout(PIN_TX);
-    pin_set_ppso(PIN_TX, PPSO_U1TX);
-    pin_din(PIN_RX);
-    pin_set_ppsi(PIN_RX, PPSI_U1RX);
+    pin_dout(PIN_RX);
+    pin_set_ppso(PIN_RX, PPSO_U1TX);
+    pin_din(PIN_TX);
+    pin_set_ppsi(PIN_TX, PPSI_U1RX);
 
     //Uartの各種設定
     U1MODEbits.UARTEN = false; //一応、モジュールの電源を切る。
@@ -83,9 +83,11 @@ void uart_init() {
 }
 
 char uart_putc(char c){
-    char result=ring2_putc(&tx_ring,c);
-    if (sendable())flush();
-    return result;
+    /*char result=ring2_putc(&tx_ring,c);
+    if (sendable())flush();*/
+    while (U1STAbits.UTXBF);
+    U1TXREG =c; 
+    return c ;
 }
 
 const uint8_t* uart_write(const uint8_t* byte,size_t size){
@@ -95,9 +97,16 @@ const uint8_t* uart_write(const uint8_t* byte,size_t size){
 }
 
 const char* uart_puts(const char* str){
-    const char* result=ring2_puts(&tx_ring,str);
-    if (sendable())flush();
-    return result;
+    /*const char* result=ring2_puts(&tx_ring,str);
+    if (sendable())flush();*/
+    int len = strlen(str);
+    int i;
+    for ( i=0;i<len;i++){
+        while (U1STAbits.UTXBF);
+        U1TXREG =str[i]; 
+    }
+    
+    return str;
 }
 
 bool uart_empty(){

@@ -8,9 +8,10 @@
 #include <math.h>
 #include "pin.h"
 // 仕様　VM,CA,CB,CCを設定
-#define CHANNEL_SIZE (4)
+#define CHANNEL_SIZE (4) //最適化のため、変更禁止
 #define CHANNEL_LENGTH (16)
 static analog_id id_list[CHANNEL_SIZE];
+
 //技術ノート
 //TRC = 250 ns 
 //FCY = 40 MHz -> TCY = 25 ns (1000/40 ns)
@@ -28,9 +29,9 @@ static analog_id id_list[CHANNEL_SIZE];
 //つまり1channelあたり208.33kHzでサンプリングされる。
 
 //内部バッファ
-static uint16_t results[CHANNEL_SIZE][CHANNEL_LENGTH];
+static uint16_t results[CHANNEL_SIZE*CHANNEL_LENGTH];
 static uint16_t result_index;//次に書き込まれる場所
-
+static const size_t result_total = CHANNEL_LENGTH*CHANNEL_SIZE;
 //FIRフィルタ構成データ
 #define FIR_SIZE 3
 static const uint16_t fir_filter[FIR_SIZE]={100,100,8};
@@ -106,28 +107,21 @@ void adc_init() {
     //起動
     AD1CON1bits.ADON = true;
 }
-
-uint16_t adc_read_direct(adc_channel_id aid){
-    return results[aid][result_index];
+//低速
+uint16_t adc_read_direct(adc_channel_id id){
+    size_t newest = result_index!=0?(result_index-CHANNEL_SIZE+id):result_total-CHANNEL_SIZE+id;
+    return results[newest];    
 }
-
 
 //データ列をコピーする。
 uint16_t* adc_copy(adc_channel_id id,uint16_t* dest,size_t count){
-    const uint16_t* result = results[id]; 
-    uint16_t *it=dest;//destination buffer's iterator
-    uint16_t start=(result_index-1+CHANNEL_LENGTH)%CHANNEL_LENGTH;
-    uint16_t end =(result_index-1-count-CHANNEL_LENGTH)&CHANNEL_LENGTH;
-    uint16_t pos;//ring buffer's position
-    //ring_bufferなので折返しを考慮する。
-    if (start>end){
-        for (pos=start;pos<CHANNEL_LENGTH;pos++){
-            *(it++)=result[pos];
-        }
-        start=0;
-    }
-    for (pos=start;pos<end;pos++){
-         *(it++)=result[pos];
+    const size_t newest = result_index!=0?(result_index-CHANNEL_SIZE+id):result_total-CHANNEL_SIZE+id;
+    int16_t pos=newest,next;
+    size_t idx;
+    for (idx=0;idx<count;idx++){
+        dest[idx]=results[pos];
+        next = pos-CHANNEL_SIZE;
+        pos = next >=0?next:result_total-CHANNEL_SIZE+id;
     }
     return dest;
 }
@@ -148,17 +142,8 @@ q0610_t adc_read(adc_channel_id id){
 void __attribute__((interrupt, no_auto_psv)) _ADC1Interrupt() {
     //使うべきバッファを選択する
     volatile uint16_t* buf =  AD1CON2bits.BUFS?&ADC1BUF8:&ADC1BUF0;
-    uint16_t idx;
-    change_id ch=0;
-    for (idx=0;idx<8;idx++){
-        //store
-        results[ch][result_index]=buf[idx];
-        //update
-        if ((++ch)==CHANNEL_SIZE){
-            uint16_t next= result_index+1;
-            ch=0;
-            result_index=next<CHANNEL_LENGTH?next:0;
-        }   
-    }
+    memcpy(&results[result_index],(void*)buf,sizeof(uint16_t)*8);
+    size_t next =result_index+8;
+    result_index = next >result_total?0:next;
     IFS0bits.AD1IF = false;
 }

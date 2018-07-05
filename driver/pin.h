@@ -53,8 +53,8 @@ typedef enum pin{
     PIN_MCLK,
     //VSS
     //VDD
-    PIN_RX = 41,
-    PIN_TX,
+    PIN_RX = 41, //外部から見て
+    PIN_TX,//外部から見て
     PIN_QEI_Y,
     PIN_QEI_X,
     PIN_END //終端処理
