@@ -17,31 +17,23 @@
 //PLLDIV = 40
 //PLLPORT =  2
 
-static void enter_hs_pll();
+#if !EXTERNAL_CLOCK
 static void enter_frc_pll();
+#else
+static void enter_hs_pll();
+#endif
 
 void clock_init() {
     //内部クロックを初期化する
-
 #if !EXTERNAL_CLOCK
-    // Configure PLL prescaler, PLL postscaler, and PLL divisor
-    PLLFBD = 41; // M = 43
-    CLKDIVbits.PLLPRE = 0; // N1 = 2
-    CLKDIVbits.PLLPOST = 0; // N2 = 2
-    // Initiate clock switch to internal FRC with PLL (NOSC = 0b001)
-    __builtin_write_OSCCONH(0x01);
-    __builtin_write_OSCCONL(0x01);
-    // Wait for clock switch to occur
-    while (OSCCONbits.COSC != 0b001);
-    // Wait for PLL to lock
-    while (OSCCONbits.LOCK != 1) {
-    };
+    enter_frc_pll();
 #else
     //shift FCY 80MHz
     enter_hs_pll();
 #endif
 }
 
+#if !EXTERNAL_CLOCK
 static void enter_frc_pll(){
     //clock setting(PLL)
     CLKDIVbits.PLLPRE = 2; //2
@@ -57,7 +49,7 @@ static void enter_frc_pll(){
     while (OSCCONbits.COSC != 0b001);
     while (OSCCONbits.LOCK != 1); //wait
 }
-
+#else
 static void enter_hs_pll() {
     //clock setting(PLL)
     CLKDIVbits.PLLPRE = 2; //2
@@ -72,3 +64,4 @@ static void enter_hs_pll() {
     while (OSCCONbits.COSC != 0b011);
     while (OSCCONbits.LOCK != 1);
 }
+#endif
