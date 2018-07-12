@@ -9,8 +9,8 @@
 #include "timer.h"
 #include "adc.h"
 int driver_init(){
-    timer23_init();
     clock_init();
+    timer23_init();
     
     pwm_init();
     int_init();

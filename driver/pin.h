@@ -144,9 +144,7 @@ static inline bool analog_cheak(peripheral_id p){
 void pin_set_ppso(pin_t pin, ppso_name_t ppso);
 //入力先変更
 void pin_set_ppsi(pin_t pin, ppsi_name_t ppsi);
-//アナログ
-// flag...trueなら利用する。
-//void pin_set_analog(pin_t pin, bool flag);
+
 
 
 #endif

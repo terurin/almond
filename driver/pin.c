@@ -4,17 +4,18 @@
 const port_t pin_pair_error = {
     .number = 0xff, .port = 0xff
 };
-const peripheral_id peripheral_error= 0xffff;
-const change_id change_error=0xffff;
-const analog_id analog_error=0xffff;
+const peripheral_id peripheral_error = 0xffff;
+const change_id change_error = 0xffff;
+const analog_id analog_error = 0xffff;
 
 //ピンのテーブル
 //const static size_t pin_table_count = 45; //要素数
+
 struct pin_info {
     //1Word
     unsigned number : 4; //
     unsigned port : 2;
-    unsigned :1;
+    unsigned : 1;
     unsigned exist : 1;
     unsigned analog : 4;
     unsigned : 3;
@@ -28,7 +29,7 @@ struct pin_info {
     unsigned : 3;
 };
 typedef struct pin_info pin_info_t;
-const static  pin_info_t pin_table[] = {
+const static pin_info_t pin_table[] = {
     {.exist = false},
     //HA
     {.exist = true, .port = 1, .number = 9, .has_analog = false,
@@ -157,16 +158,16 @@ const static  pin_info_t pin_table[] = {
 
 static inline const pin_info_t* get_info(pin_t id) {
     if (id < PIN_END) {
-        return pin_table+id;
+        return pin_table + id;
     } else {
         return NULL;
     }
 }
 
-bool pin_number_check(pin_t num){
-    if(0<=num&&num<PIN_END){
+bool pin_number_check(pin_t num) {
+    if (0 <= num && num < PIN_END) {
         return pin_table[num].exist;
-    }else{
+    } else {
         return false;
     }
 }
@@ -225,7 +226,7 @@ bool pin_has_change(pin_t id) {
     }
 }
 
-change_id pin_cast_change(pin_t id){
+change_id pin_cast_change(pin_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         if (info->has_change) {
@@ -247,7 +248,7 @@ bool pin_has_analog(pin_t id) {
     }
 }
 
-analog_id pin_cast_analog(pin_t id){
+analog_id pin_cast_analog(pin_t id) {
     const pin_info_t* info = get_info(id);
     if (info != NULL) {
         if (info->has_change) {
@@ -263,12 +264,23 @@ analog_id pin_cast_analog(pin_t id){
 void pin_set_ppso(pin_t pin, ppso_name_t ppso) {
     if (pin_has_peripheral(pin)) {
         peripheral_id pid = pin_cast_peripheral(pin);
-        uint8_t* RPRn = (uint8_t*) & RPOR0; //起点を取得
-        if (pid < 26) {//RP25まで存在する(データシートより)
-            RPRn[pid] = ppso;
+        if (pid >= 26)return; //{//RP25まで存在する(データシートより)
+        uint16_t *RPRn = (uint16_t*) & RPOR0;
+        uint16_t *RPRi = RPRn + (pid >> 1); //書き込み対象
+        bool is_high = pid & 0x1; //high or low
+
+        if (is_high) {
+            *RPRi &= 0x00ff; //ハイサイドを削除
+            *RPRi |= (uint16_t) ppso << 8;
+        } else {
+            *RPRi &= 0xff00; //ローサイドを削除
+            *RPRi |= (uint16_t) ppso;
         }
+
+
     }
 }
+
 
 void pin_set_ppsi(pin_t pin, ppsi_name_t ppsi) {
     if (pin_has_peripheral(pin)) {

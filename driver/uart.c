@@ -13,22 +13,17 @@
 #define BAUD (115200) //転送速度
 #define HIGH_SPEED (0) //高速伝送の有無
 #if HIGH_SPEED
-    #define BRG (FCY / (16UL * BAUD) - 1)
-#else
     #define BRG (FCY / (4UL * BAUD) - 1)
+#else
+    #define BRG (FCY /(16UL * BAUD) - 1)
 #endif
 
-static uint8_t tx_buf [TX_BUFFER_SIZE];
-static ring2_t tx_ring;
-static const uint16_t tx_limit;
-static uint8_t rx_buf [RX_BUFFER_SIZE];
-static ring2_t rx_ring;
+//キュー実装
+static volatile uint16_t rused, rin, rout;
+static volatile char rbuf[RX_BUFFER_SIZE];
 
-//送信する必要があるか?
-static inline bool sendable() {
-    return ring2_used(&tx_ring)<(TX_BUFFER_SIZE * TX_BUFFER_LIMIT);
-}
-static void flush();
+static volatile uint16_t tused, tin, tout;
+static volatile char tbuf[TX_BUFFER_SIZE];
 
 void uart_init() {
     //各種定数
@@ -54,13 +49,7 @@ void uart_init() {
         .URXISEL = 0b10, //3 byte received happen interrupt
         .ADDEN = false, //Address detect is disable
     };
-
-
     
-    //管理領域初期化
-    ring2_init(&tx_ring, tx_buf, TX_BUFFER_SIZE_LOG2);
-    ring2_init(&rx_ring, rx_buf, RX_BUFFER_SIZE_LOG2);
-
     //接続
     pin_dout(PIN_RX);
     pin_set_ppso(PIN_RX, PPSO_U1TX);
@@ -85,72 +74,4 @@ char uart_putc(char c){
     while (U1STAbits.UTXBF);
     U1TXREG =c; 
     return c ;
-}
-
-const uint8_t* uart_write(const uint8_t* byte,size_t size){
-    const uint8_t* result=ring2_write(&tx_ring,byte,size);
-    if (sendable())flush();
-    return result;
-}
-
-const char* uart_puts(const char* str){
-    /*const char* result=ring2_puts(&tx_ring,str);
-    if (sendable())flush();*/
-    int len = strlen(str);
-    int i;
-    for ( i=0;i<len;i++){
-        while (U1STAbits.UTXBF);
-        U1TXREG =str[i]; 
-    }
-    
-    return str;
-}
-
-bool uart_empty(){
-    return ring2_empty(&rx_ring);
-}
-
-char uart_getc(){
-    return ring2_getc(&rx_ring);
-}
-
-uint8_t* uart_read(uint8_t* byte,size_t size){
-    return ring2_read(&rx_ring,byte,size);
-}
-
-char* uart_gets(char* str,size_t size){
-    return ring2_gets(&rx_ring,str,size);
-}
-
-void uart_flush(){
-    flush();
-}
-
-static void flush(){
-    bool necessary = (!IEC0bits.U1TXIE)&& //Hardware FIFO
-            (!ring2_empty(&tx_ring));//Software FIFO
-    if (necessary){
-        while (!U1STAbits.UTXBF&&!ring2_empty(&tx_ring)){
-            U1TXREG=ring2_getc(&tx_ring);
-        }
-        IEC0bits.U1TXIE=true;
-    }
-}
-
-void __attribute__((interrupt, auto_psv)) _U1RXInterrupt(){
-    do {
-        if (!ring2_full(&rx_ring)){
-            ring2_putc(&rx_ring,U1RXREG);
-        }
-    }while (U1STAbits.URXDA);
-    IFS0bits.U1RXIF=false;
-}
-
-void __attribute__((interrupt, auto_psv)) _U1TXInterrupt(){
-    while (!ring2_empty(&tx_ring)&& U1STAbits.UTXBF == false) {
-        U1TXREG=ring2_getc(&tx_ring);
-    }
-
-    IEC0bits.U1TXIE = !ring2_empty(&tx_ring);
-    IFS0bits.U1TXIF = false;
 }
