@@ -8,7 +8,6 @@
  *　設定可能な割り込み優先度は0~7まで
  */
 
-
 //SPI 割り込み優先度
 #define SPI_TRANCEMIT_PRI (3) 
 #define SPI_ERROR_PRI (3) //使っていない
@@ -29,6 +28,11 @@
 #define TMR23_PRI (2)
 
 //ADC 割り込み優先度
-#define ADC_PRI (4)
+#define ADC_PRI (3)
+
+//Clock設定
+
+#define FOSC (80000000UL)
+#define FCY (FOSC/2)
 
 #endif

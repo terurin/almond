@@ -21,20 +21,21 @@ static analog_id id_list[CHANNEL_SIZE];
 //TAD min = 117.6 ns (12bit),76(10 bit) 
 //TCONV = 12 TAD
 //TSAMP = 3 TAD(but auto mode is not needed)
+//仕様 (回路図より)
+//入力遮断周波数　90kHz
+//仕様
+//出力周期 10kHz
 
 //計算
-//4チャンネルが100kHz以上でで取り込めるように計算する
-//TAD = FCY(=25 ns) * 4 = 100 ns = 0.100 us 
-//TSAMP = TAD(=0.100 us) * 12 = 1.2 us -> 833.3 kHz
-//つまり1channelあたり208.33kHzでサンプリングされる。
-
+//4チャンネルが100kHzで取り込めるように計算する、つまり、400kHzで取り込む
+//TAD = FCY(=25 ns) * 4 = 100 ns = 0.1 us 
+//TSAMP = TAD(=0.1 us) * (12+12+1) = 2.5 us -> 400 kHz
 //内部バッファ
 static uint16_t results[CHANNEL_SIZE*CHANNEL_LENGTH];
 static uint16_t result_index;//次に書き込まれる場所
 static const size_t result_total = CHANNEL_LENGTH*CHANNEL_SIZE;
 //FIRフィルタ構成データ
-#define FIR_SIZE 3
-static const uint16_t fir_filter[FIR_SIZE]={100,100,8};
+
 
 //入力電圧係数
 
@@ -73,7 +74,7 @@ void adc_init() {
 
     const AD1CON3BITS con3 = {
         .ADRC = false, //
-        .SAMC = 0, // Auto Samping Rate(0~31), TAD
+        .SAMC = 8, // Auto Samping Rate(0~31), TAD
         .ADCS = 4 // TAD = (n+1)* TCY, n is 6 bit
     };
     int idx = 0;
@@ -127,9 +128,13 @@ uint16_t* adc_copy(adc_channel_id id,uint16_t* dest,size_t count){
 }
 
 uint16_t adc_read_raw(adc_channel_id id){
-    uint16_t data[FIR_SIZE];
-    adc_copy(id,data,FIR_SIZE);
-    return filter_fir(data,fir_filter,FIR_SIZE);
+    const size_t lenght=10;
+    uint16_t data[lenght];
+    adc_copy(id,data,lenght);
+//100kHzでサンプリングされ、10kHzで平滑化するので
+    uint32_t sum=0;
+    for (int i=0;i<10;i++)sum+=data[i];
+    return (uint16_t)(sum/10);
 }
 
 q0610_t adc_read(adc_channel_id id){

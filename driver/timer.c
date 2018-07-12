@@ -5,8 +5,6 @@
 #include "config.h"
 
 //制約　内部クロックは80MHzで動作していると仮定する
-#define FOSC (80000000UL)
-#define FCY (FOSC/2)
 uint32_t timer_fcy=FCY;
 const tick_t tick_max= FCY*60;//60s=1min
 uint16_t timer23_minutes;//[min]

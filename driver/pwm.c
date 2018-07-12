@@ -1,6 +1,5 @@
 #include "pwm.h"
 #include <p33Fxxxx.h>
-#include "clock.h"
 #include "config.h"
 #include <util/qmath.h>
 
@@ -16,29 +15,36 @@
  */
 
 //各種設定
-#define KHZ (1000)
-static const uint32_t cycle = (50.0f * KHZ);
-static uint16_t period = 0; //制御周期
-static q15_t duty_max =QCAST(0.9f,15); //dutyの上限
-static q15_t duty_min = QCAST(0.1f,15); //duty比の下限(安全対策)
-#define UP_DOWN (false) //PWMの動作モード　アップダウンならtrue,フリーランならfalse
+#define UP_DOWN (true) //PWMの動作モード　アップダウンならtrue,フリーランならfalse
+#define CYCLE (10.0e3)
+static const uint32_t cycle = CYCLE;
+#if UP_DOWN == true
+static const uint16_t period =FCY/CYCLE/2;
+#else
+static const uint16_t period =FCY/CYCLE;
+#endif
+
+static q15_t duty_max = QCAST(0.9f, 15); //dutyの上限
+static q15_t duty_min = QCAST(0.1f, 15); //duty比の下限(安全対策)
+
 //内部テーブル
-static volatile uint16_t *const  dc_table[] = {&P1DC1, &P1DC2, &P1DC3};
+static volatile uint16_t * const dc_table[] = {&P1DC1, &P1DC2, &P1DC3};
 
 //割り込み　コールバック用
 static pwm_handler_t* callback_handler = NULL;
 static void *callback_object = NULL;
 
 //制限関数
+
 static inline uint16_t clip(q0016_t rate) {
-    bool up= rate>duty_max;
+    bool up = rate>duty_max;
     bool down = rate<duty_min;
     if (!up&!down) {
         uint16_t duty = ((uint32_t) period * rate) >> 14;
         return duty;
-    } else if (up){
+    } else if (up) {
         return duty_max;
-    }else {
+    } else {
         //stop motor because duty is too few
         return 0;
     }
@@ -152,17 +158,6 @@ static const P1OVDCONBITS ov_table[] = {
     }
 };
 
-//周期レジスタの値を計算する
-
-static inline uint16_t period_free() {
-    return (clock_fcy() / (cycle)) - 1;
-}
-
-static inline uint16_t period_up_down() {
-    return (uint16_t) (clock_fcy() / (cycle * 2) - 1);
-}
-
-
 void pwm_init() {
     //定数定義
 
@@ -219,11 +214,8 @@ void pwm_init() {
     P1DTCON2bits = p2dt;
     P1OVDCONbits = ov_free;
     //カウンタを初期化する
-#if UP_DOWN ==true
-    period = PTPER = period_up_down();
-#else
-    period = PTPER = period_free();
-#endif
+
+    PTPER=period;
     PTMR = 0;
     pwm_duty_write_all(0);
     //割り込みを許可する
@@ -256,31 +248,31 @@ void pwm_state(pwm_state_name_t state) {
     P1OVDCONbits = mode;
 }
 
-void pwm_duty_write(pwm_pole_id id,uint16_t value){
-    if (PWM_POLE_A<=id&&id<PWM_POLE_END){
-        *dc_table[id]=value;
+void pwm_duty_write(pwm_pole_id id, uint16_t value) {
+    if (PWM_POLE_A <= id && id < PWM_POLE_END) {
+        *dc_table[id] = value;
     }
 }
 
 void pwm_duty_write_all(uint16_t value) {
     size_t idx;
-    for (idx=0;idx<(sizeof(dc_table[0])/sizeof(dc_table));idx++){
-        *dc_table[idx]=value;
+    for (idx = 0; idx < (sizeof (dc_table[0]) / sizeof (dc_table)); idx++) {
+        *dc_table[idx] = value;
     }
 }
 
-void pwm_rate_write(pwm_pole_id id,q15_t rate){
-    pwm_duty_write(id,clip(rate));
+void pwm_rate_write(pwm_pole_id id, q15_t rate) {
+    pwm_duty_write(id, clip(rate));
 }
 
-void pwm_rate_write_all(q15_t rate){
+void pwm_rate_write_all(q15_t rate) {
     pwm_duty_write_all(clip(rate));
 }
 
-void pwm_rate_each(q15_t a, q15_t b, q15_t c){
-    *dc_table[PWM_POLE_A]=clip(a);
-    *dc_table[PWM_POLE_B]=clip(b);
-    *dc_table[PWM_POLE_C]=clip(c);
+void pwm_rate_each(q15_t a, q15_t b, q15_t c) {
+    *dc_table[PWM_POLE_A] = clip(a);
+    *dc_table[PWM_POLE_B] = clip(b);
+    *dc_table[PWM_POLE_C] = clip(c);
 }
 
 void pwm_event(pwm_handler_t hwnd, void* obj) {
