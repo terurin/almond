@@ -35,4 +35,6 @@
 #define FOSC (80000000UL)
 #define FCY (FOSC/2)
 
+#define EXTERNAL_CLOCK (0) //外部クロックを使うか? 0/1
+
 #endif

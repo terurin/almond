@@ -25,8 +25,10 @@ static inline void delay(uint16_t a){
 int main(void) {
     driver_init();
     mid_init();
-    pwm_event(test,NULL);
-    for(;;);
+    
+    for(;;){
+        uart_putc('a');
+    }
     
     return 0;
 }

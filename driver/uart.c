@@ -11,16 +11,18 @@
 #define TX_BUFFER_LIMIT (0.30) //送信する必要があるとする割合
 #define RX_BUFFER_SIZE ((1UL)<<RX_BUFFER_SIZE_LOG2)
 #define BAUD (115200) //転送速度
-#define HIGH_SPEED (false) //高速伝送の有無
+#define HIGH_SPEED (0) //高速伝送の有無
+#if HIGH_SPEED
+    #define BRG (FCY / (16UL * BAUD) - 1)
+#else
+    #define BRG (FCY / (4UL * BAUD) - 1)
+#endif
 
 static uint8_t tx_buf [TX_BUFFER_SIZE];
 static ring2_t tx_ring;
 static const uint16_t tx_limit;
 static uint8_t rx_buf [RX_BUFFER_SIZE];
 static ring2_t rx_ring;
-//割り込みの優先度(0~7)
-static const uint16_t tx_ip = 3;
-static const uint16_t rx_ip = 2;
 
 //送信する必要があるか?
 static inline bool sendable() {
@@ -53,11 +55,7 @@ void uart_init() {
         .ADDEN = false, //Address detect is disable
     };
 
-#if HIGH_SPEED == true
-    const uint16_t brg = clock_fcy() / (16UL * BAUD) - 1;
-#else
-    const uint16_t brg = clock_fcy() / (4UL * BAUD) - 1;
-#endif
+
     
     //管理領域初期化
     ring2_init(&tx_ring, tx_buf, TX_BUFFER_SIZE_LOG2);
@@ -73,8 +71,7 @@ void uart_init() {
     U1MODEbits.UARTEN = false; //一応、モジュールの電源を切る。
     U1STAbits = status;
     U1MODEbits = mode;
-    U1BRG = brg;
-    
+    U1BRG = BRG;
     //割り込み
     IEC0bits.U1TXIE = IEC0bits.U1RXIE =false;//割り込み無効化
     IFS0bits.U1TXIF = IFS0bits.U1RXIF =false;//割り込みフラグ解除
