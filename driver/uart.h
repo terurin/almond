@@ -20,16 +20,7 @@ const char* uart_puts(const char*);
 const char* uart_putl(const char*);
 char uart_getc();
 void uart_flush();
-/*
-const uint8_t* uart_write(const uint8_t*,size_t);
-const char* uart_puts(const char*);
-
-*/
-/*
 uint8_t* uart_read(uint8_t*,size_t);
 char* uart_gets(char*,size_t);
-
-void uart_flush();
-*/
 
 #endif

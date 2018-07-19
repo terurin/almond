@@ -21,8 +21,8 @@
 #endif
 
 //キュー実装
-static char rx_buf[RX_BUFFER_SIZE];
-static char tx_buf[TX_BUFFER_SIZE];
+static uint8_t rx_buf[RX_BUFFER_SIZE];
+static uint8_t tx_buf[TX_BUFFER_SIZE];
 static ring2_t tx_ring;
 static ring2_t rx_ring;
 //定数
@@ -83,7 +83,7 @@ const uint8_t* uart_write(const uint8_t* byte, size_t size) {
 
 const char* uart_puts(const char* str) {
     IEC0bits.U1TXIE = false;
-    ring2_putc(&tx_ring, str);
+    ring2_puts(&tx_ring, str);
     if (ring2_used(&tx_ring) > tx_limit)uart_flush();
     IEC0bits.U1TXIE = true;
     return str;
@@ -91,7 +91,6 @@ const char* uart_puts(const char* str) {
 
 const char* uart_putl(const char* str) {
     IEC0bits.U1TXIE = false;
-    const char *it;
     ring2_putl(&tx_ring, str);
     if (ring2_used(&tx_ring) > tx_limit)uart_flush();
     IEC0bits.U1TXIE = true;
@@ -99,8 +98,27 @@ const char* uart_putl(const char* str) {
 }
 
 char uart_getc() {
-    while (uart_empty());
-    return ring2_getc(&rx_ring);
+    char c;
+    IEC0bits.U1RXIE = false;
+    c = !ring2_empty(&rx_ring) ? ring2_getc(&rx_ring) : 0;
+    IEC0bits.U1RXIE = true;
+    return c;
+}
+
+uint8_t* uart_read(uint8_t* byte, size_t size) {
+    uint8_t *result;
+    IEC0bits.U1RXIE = false;
+    result=ring2_read(&rx_ring,byte,size);
+    IEC0bits.U1RXIE = true;
+    return result;
+}
+
+char* uart_gets(char* str, size_t size) {
+    char *result;
+    IEC0bits.U1RXIE = false;
+    result=ring2_gets(&rx_ring,str,size);
+    IEC0bits.U1RXIE = true;
+    return result;
 }
 
 void uart_flush() {
@@ -111,9 +129,8 @@ void uart_flush() {
             c = ring2_getc(&tx_ring);
             U1TXREG = c;
         }
-        busy=true;
+        busy = true;
     }
-
 }
 
 void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt(void) {
@@ -136,6 +153,6 @@ void __attribute__((interrupt, no_auto_psv)) _U1TXInterrupt(void) {
         c = ring2_getc(&tx_ring);
         U1TXREG = c;
     }
-    busy=ring2_used(&tx_ring)>0;
+    busy = ring2_used(&tx_ring) > 0;
     IFS0bits.U1TXIF = false;
 }
