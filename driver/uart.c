@@ -44,7 +44,7 @@ void uart_init() {
     U1MODEbits.UEN=0b00;//module activate on using tx and rx pins
     U1MODEbits.UARTEN=true;//transmit pin activate
     
-
+    
 
 
 
@@ -67,3 +67,7 @@ char uart_putc(char c){
     putchar(c);
 }
 
+char uart_getc(){
+    while(!U1STAbits.URXDA);
+    return U1RXREG;
+}
