@@ -10,7 +10,7 @@
 #define RX_BUFFER_SIZE_LOG2 (6)
 #define TX_BUFFER_LIMIT_RATE (0.5) //送信する必要があるとする割合
 #define TX_BUFFER_SIZE  (1UL<<TX_BUFFER_SIZE_LOG2)
-#define RX_BUFFER_SIZE ((1UL)<<RX_BUFFER_SIZE_LOG2)
+#define RX_BUFFER_SIZE  (1UL<<RX_BUFFER_SIZE_LOG2)
 
 #define BAUD (115200) //転送速度
 #define HIGH_SPEED (0) //高速伝送の有無
@@ -108,7 +108,7 @@ char uart_getc() {
 uint8_t* uart_read(uint8_t* byte, size_t size) {
     uint8_t *result;
     IEC0bits.U1RXIE = false;
-    result=ring2_read(&rx_ring,byte,size);
+    result = ring2_read(&rx_ring, byte, size);
     IEC0bits.U1RXIE = true;
     return result;
 }
@@ -116,7 +116,7 @@ uint8_t* uart_read(uint8_t* byte, size_t size) {
 char* uart_gets(char* str, size_t size) {
     char *result;
     IEC0bits.U1RXIE = false;
-    result=ring2_gets(&rx_ring,str,size);
+    result = ring2_gets(&rx_ring, str, size);
     IEC0bits.U1RXIE = true;
     return result;
 }

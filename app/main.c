@@ -23,11 +23,17 @@ static inline void delay(uint16_t a){
 
 
 int main(void) {
+    char line[32];
+    char* it;
     driver_init();
     mid_init();
     
     for(;;){
-        uart_putl("123456789ABCDEF");
+        it=uart_gets(line,32);
+        if (it!=NULL){
+            uart_putl(it);
+            uart_flush();
+        }
         delay(1000);
     }
     
