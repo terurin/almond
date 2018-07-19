@@ -49,7 +49,7 @@ char ring2_getc(ring2_ptr obj) {
 
 const uint8_t* ring2_write(ring2_ptr obj, const uint8_t* mem, size_t sz) {
     if (obj == NULL)return NULL;
-    bool writable = ring2_free(obj) - sz > 0;
+    bool writable =(obj->used+sz) <obj->size;
     if (writable) {
         uint16_t pos = obj->in;
         const uint8_t* it = mem;
@@ -74,7 +74,7 @@ const char* ring2_puts(ring2_ptr obj, const char* str) {
 
 const char* ring2_putl(ring2_ptr obj, const char* str) {
     const char * result = (const char*) ring2_write(obj, (const uint8_t*) str, strlen(str));
-    ring2_putc(obj,newline);
+    if (result!=NULL)ring2_putc(obj,newline);
     return result;
 }
 

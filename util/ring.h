@@ -25,7 +25,7 @@ static inline uint16_t ring2_used(const ring2_ptr obj){
 }
 
 static inline uint16_t ring2_free(const ring2_ptr obj){
-    return obj!=NULL? obj->size-obj->used:0;
+    return obj!=NULL? (obj->size-obj->used):0;
 }
 
 static inline bool ring2_full(const ring2_ptr obj){
@@ -33,7 +33,7 @@ static inline bool ring2_full(const ring2_ptr obj){
 }
 
 static inline bool ring2_empty(const ring2_ptr obj){
-    return obj!=NULL?!obj->used:true;
+    return obj!=NULL?!obj->used>0:true;
 }
 
 static inline uint8_t ring2_in(const ring2_ptr obj){

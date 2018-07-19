@@ -27,9 +27,8 @@ int main(void) {
     mid_init();
     
     for(;;){
-        char c=uart_getc();
-        uart_putc(c);
-        
+        uart_putl("123456789ABCDEF");
+        delay(1000);
     }
     
     return 0;

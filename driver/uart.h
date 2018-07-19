@@ -15,7 +15,11 @@ void uart_init();
 
 bool uart_empty();
 char uart_putc(char);
+const uint8_t* uart_write(const uint8_t*,size_t size);
+const char* uart_puts(const char*);
+const char* uart_putl(const char*);
 char uart_getc();
+void uart_flush();
 /*
 const uint8_t* uart_write(const uint8_t*,size_t);
 const char* uart_puts(const char*);
