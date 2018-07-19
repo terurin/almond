@@ -36,9 +36,9 @@ void clock_init() {
 #if !EXTERNAL_CLOCK
 static void enter_frc_pll(){
     //clock setting(PLL)
-    CLKDIVbits.PLLPRE = 2; //2
-    PLLFBDbits.PLLDIV = 40;
-    CLKDIVbits.PLLPOST = 2; //2
+    CLKDIVbits.PLLPRE = 0b00000; //N1 = 2 
+    PLLFBDbits.PLLDIV = 38;//M = 40 , :=M-2
+    CLKDIVbits.PLLPOST = 0b00; //N2 = 2
     OSCCONbits.CLKLOCK = false; //Lock
     //内蔵クロックの微調整
     OSCTUNbits.TUN= +9; 
@@ -52,9 +52,9 @@ static void enter_frc_pll(){
 #else
 static void enter_hs_pll() {
     //clock setting(PLL)
-    CLKDIVbits.PLLPRE = 2; //2
-    PLLFBDbits.PLLDIV = 40;
-    CLKDIVbits.PLLPOST = 2; //2
+    CLKDIVbits.PLLPRE = 0b00000; //N1 = 2 
+    PLLFBDbits.PLLDIV = 38;//M = 40 , :=M-2
+    CLKDIVbits.PLLPOST = 0b00; //N2 = 2
     OSCCONbits.CLKLOCK = false; //Lock
 
     //unlock clock source

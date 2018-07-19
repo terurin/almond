@@ -28,6 +28,7 @@ int main(void) {
     
     for(;;){
         uart_putc('a');
+        delay(1000);
     }
     
     return 0;

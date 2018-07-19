@@ -10,16 +10,16 @@
 #include "adc.h"
 int driver_init(){
     clock_init();
-    timer23_init();
+   // timer23_init();
     
-    pwm_init();
-    int_init();
-    change_init();
+    //pwm_init();
+    //int_init();
+    //change_init();
     
     uart_init();
-    qei_init();
+    //qei_init();
     
-    adc_init();
+    //adc_init();
     return 0;
 }
 

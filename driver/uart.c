@@ -4,6 +4,7 @@
 #include "clock.h"
 #include "port.h"
 #include "config.h"
+#include <stdio.h>
 //領域設定用定数
 #define TX_BUFFER_SIZE_LOG2 (6)
 #define RX_BUFFER_SIZE_LOG2 (6)
@@ -25,53 +26,44 @@ static volatile char rbuf[RX_BUFFER_SIZE];
 static volatile uint16_t tused, tin, tout;
 static volatile char tbuf[TX_BUFFER_SIZE];
 
-void uart_init() {
-    //各種定数
-    const U1MODEBITS mode = {
-        .UARTEN = true, //module enable
-        .USIDL = false, //at idel,active
-        .IREN = false, //IrDA is disable
-        .RTSMD = false, //RTS is simplex
-        .UEN = 0b00, //Tx,Rx activate, CTS ,RTS not use
-        .WAKE = false, //not wake up by fall down
-        .LPBACK = false, //not loop-back
-        .ABAUD = false, //auto rate defect disable
-        .URXINV = false, //When Idel level is '1'
-        .BRGH = HIGH_SPEED, //High Speed Mode
-        .PDSEL = 0b00, //8bit , non-parity
-        .STSEL = false// Stop bit width is 1 bit
-    };
+static inline void pin_assign();//接続
 
-    const U1STABITS status = {
-        .UTXISEL1 = 1, .UTXISEL0 = 0, //at tx-fifo & shift register is empty happen,interrupt
-        .UTXINV = false, //not invert
-        .UTXEN = true, // Tx pin enable
-        .URXISEL = 0b10, //3 byte received happen interrupt
-        .ADDEN = false, //Address detect is disable
-    };
+void uart_init() {
+    pin_assign();
     
-    //接続
+    U1MODEbits.PDSEL= 0b00;//8bit non party
+    U1MODEbits.STSEL=false;//stop bit length is one  
+    U1BRG=BRG;
+    U1STAbits.UTXEN=true;
+    //interrupt sequence
+    IFS0bits.U1TXIF=false;
+    IEC0bits.U1RXIE=false;
+    IPC2bits.U1RXIP=UART_RX_PRI;
+
+    
+    U1MODEbits.UEN=0b00;//module activate on using tx and rx pins
+    U1MODEbits.UARTEN=true;//transmit pin activate
+    
+
+
+
+
+
+
+
+}
+
+static inline void pin_assign(){
     pin_dout(PIN_RX);
     pin_set_ppso(PIN_RX, PPSO_U1TX);
     pin_din(PIN_TX);
-    pin_set_ppsi(PIN_TX, PPSI_U1RX);
-
-    //Uartの各種設定
-    U1MODEbits.UARTEN = false; //一応、モジュールの電源を切る。
-    U1STAbits = status;
-    U1MODEbits = mode;
-    U1BRG = BRG;
-    //割り込み
-    IEC0bits.U1TXIE = IEC0bits.U1RXIE =false;//割り込み無効化
-    IFS0bits.U1TXIF = IFS0bits.U1RXIF =false;//割り込みフラグ解除
-    IPC3bits.U1TXIP =UART_TX_PRI;IPC2bits.U1RXIP = UART_RX_PRI;//割り込み優先度設定
-    IEC0bits.U1TXIE =false, IEC0bits.U1RXIE =true;//割り込み有効化
+    pin_set_ppsi(PIN_TX, PPSI_U1RX);  
 }
+
+
 
 char uart_putc(char c){
-    /*char result=ring2_putc(&tx_ring,c);
-    if (sendable())flush();*/
     while (U1STAbits.UTXBF);
-    U1TXREG =c; 
-    return c ;
+    putchar(c);
 }
+
