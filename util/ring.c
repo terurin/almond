@@ -7,7 +7,8 @@ void ring2_init(ring2_ptr obj, uint8_t*mem, uint16_t log2) {
     obj->buf = (uint8_t*) mem;
     obj->size = 1 << log2;
     obj->mask = (1 << log2) - 1;
-    ring2_clean(obj);
+    obj->in=obj->out=0;
+    obj->used=0;
     obj->tag = 0;
 }
 
@@ -24,7 +25,7 @@ uint16_t ring2_find(const ring2_ptr obj, char c) {
 
 char ring2_putc(ring2_ptr obj, char c) {
     if (obj == NULL)return '\0';
-    if (obj->used + 1 < obj->size) {
+    if ((obj->used + 1) < obj->size) {
         obj->buf[obj->in] = c;
         obj->in = ((obj->in + 1) & obj->mask);
         obj->used++;
@@ -35,8 +36,7 @@ char ring2_putc(ring2_ptr obj, char c) {
 }
 
 char ring2_getc(ring2_ptr obj) {
-    if (obj == NULL)return 0;
-    if (obj->used > 0) {
+    if (obj != NULL&& obj->used > 0) {
         char c;
         c = obj->buf[obj->out];
         obj->out = ((obj->out + 1) & obj->mask);

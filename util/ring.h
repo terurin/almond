@@ -33,7 +33,7 @@ static inline bool ring2_full(const ring2_ptr obj){
 }
 
 static inline bool ring2_empty(const ring2_ptr obj){
-    return ring2_used(obj)==0;
+    return obj!=NULL?!obj->used:true;
 }
 
 static inline uint8_t ring2_in(const ring2_ptr obj){
@@ -60,10 +60,7 @@ static inline bool ring2_writable(const ring2_ptr ring,size_t size){
 static inline bool ring2_readable(const ring2_ptr ring,size_t size){
     return ring2_used(ring)>=size;
 }
-//削除
-static inline void  ring2_clean(ring2_t *obj){
-    if (obj!=NULL)obj->used = obj->in=obj->out=0;
-}
+
 //書き込み
 char ring2_putc(ring2_ptr obj,char);
 const uint8_t* ring2_write(ring2_ptr obj,const uint8_t* ,size_t);
