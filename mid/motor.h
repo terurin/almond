@@ -10,9 +10,9 @@
 void motor_init();
 
 //周期的な呼び出しを行うこと
-void motor_pwm(q15_t duty);
+void motor_rate(q15_t duty);
 
-
+void motor_free();
 
 
 void motor_control();

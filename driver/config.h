@@ -17,7 +17,7 @@
 #define UART_RX_PRI (2)
 
 //PWM 割り込み優先度
-#define PWM_PRI (7)
+#define PWM_PRI (6)
 
 //状態変化割り込み優先度
 #define CN_PRI (1)
@@ -29,6 +29,10 @@
 
 //ADC 割り込み優先度
 #define ADC_PRI (3)
+
+//DRV8332 異常通知
+#define INT_OTW (7)
+#define INT_FAULT (7)
 
 //Clock設定
 

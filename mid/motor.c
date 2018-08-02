@@ -36,3 +36,8 @@ void motor_rate(q15_t duty){
     pwm_rate_write_all(abs);
     pwm_state(duty>=0?table_front[hole]:table_back[hole]);
 }
+
+void motor_free(){
+    pwm_duty_write_all(0);
+    pwm_state(PWM_STATE_FREE);
+}

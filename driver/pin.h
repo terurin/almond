@@ -16,7 +16,7 @@ typedef enum pin{
     PIN_HB,
     PIN_HC,
     PIN_OTW,
-    PIN_FALUT,
+    PIN_FAULT,
     //VSS
     //VCAP
     PIN_PWM_C = 8,

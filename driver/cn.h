@@ -6,6 +6,8 @@
 #define DRIVER_CN_HAEDER_GUARD
 
 #include "pin.h"
+#include <stdbool.h>
+
 //状態変化割り込みについて
 
 //プルアップについて
