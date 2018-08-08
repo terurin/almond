@@ -8,12 +8,13 @@
 
 #include "driver/uart.h"
 #include "driver/adc.h"
+#include "mid/hole.h"
 
 void test(void* obj){
     led_toggle(LED_A);
 }
 
-static inline void delay(uint16_t a){
+static inline void delay(uint64_t a){
     while (a>0){
         a--;
     }
@@ -29,12 +30,9 @@ int main(void) {
     mid_init();
     
     for(;;){
-        it=uart_gets(line,32);
-        if (it!=NULL){
-            uart_putl(it);
-            uart_flush();
-        }
-        delay(1000);
+        char hole= hole_sense_raw()+'0';
+        uart_putc(hole);
+        delay(10000);
     }
     
     return 0;

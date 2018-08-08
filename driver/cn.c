@@ -23,7 +23,12 @@ void change_pull_up(pin_t pin, bool sw) {
     if (!pin_has_change(pin))return;
     change_id num = pin_cast_change(pin);
     volatile uint16_t * target = !(num & 0x10) ? &CNPU1 : &CNPU2;
-    bits_write_reg(target, num & 0xf, sw);
+    uint16_t mask = 1u<<(num&0x0f);
+    if (sw){
+        *target|=mask;
+    }else{
+        *target&=~mask;
+    }
 }
 
 void change_assign(pin_t pin, bool sw) {

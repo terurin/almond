@@ -11,12 +11,17 @@ void motor_init();
 
 //周期的な呼び出しを行うこと
 void motor_rate(q15_t duty);
-
 void motor_free();
-
-
 void motor_control();
 
+enum drv_status{
+    DRV_STATUS_NONE,
+    DRV_STATUS_RUN,
+    DRV_STATUS_OTW,
+    DRV_STATE_FAULT
+};
+typedef enum drv_status drv_status_t;
+drv_status_t drv_info();
 
 
 

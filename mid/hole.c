@@ -14,8 +14,6 @@ static q0708_t speed=0;
 
 
 static void hole_event();
-
-
 static const hole_t hole_table[8] = {
     HOLE_ERROR, //000
     HOLE_A, //001
@@ -51,9 +49,17 @@ void hole_init() {
     change_event(hole_event, NULL);
 }
 
+int hole_sense_raw(){
+    bool c = port_read(hc);
+    bool b = port_read(hb);
+    bool a = port_read(ha);
+    
+    return  c<< 2 | b <<1| a; //0~7は自明
+}
+
 hole_t hole_sense() {
     //テーブルを引く
-    uint16_t id = port_read(hc) << 2 | port_read(hb) | port_read(ha); //0~7は自明
+    uint16_t id = port_read(hc) << 2 | port_read(hb)<<1 | port_read(ha); //0~7は自明
     return hole_table[id];
 }
 

@@ -1,10 +1,13 @@
 #include "mid.h"
 #include "led.h"
-#include "drv.h"
+#include "hole.h"
+#include "motor.h"
+
 
 void mid_init(){
     led_init();
-    drv_init();
+    hole_init();
+    motor_init();
     
     
 }
