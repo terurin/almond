@@ -21,33 +21,29 @@ enum pwm_state_name {
     PWM_STATE_BA = 0x03,
     PWM_STATE_CA = 0x04,
     PWM_STATE_CB = 0x05,
-    PWM_STATE_END = 0x06, //この状態は使わない
-    PWM_STATE_LOCK = 0x8,
-    PWM_STATE_FREE = 0x9
+    PWM_STATE_LOCK = 0x6,
+    PWM_STATE_FREE = 0x7,
+    PWM_STATE_END
 };
 typedef enum pwm_state_name pwm_state_name_t;
 
-enum pwm_pole_name {
+/*enum pwm_pole_name {
     PWM_POLE_A = 0,
     PWM_POLE_B,
     PWM_POLE_C,
     PWM_POLE_END//終端処理
 };
-typedef enum pwm_pole_name pwm_pole_id;
+typedef enum pwm_pole_name pwm_pole_id;*/
 
 void pwm_init();
 uint32_t pwm_cycle(); //pwmの制御周波数を取得
 uint16_t pwm_period(); //pwmの制御周期を取得
-//指定した動作波形モードに移行する
-void pwm_state(pwm_state_name_t);
-//指定したパルス幅に遷移する 
-void pwm_duty_write(pwm_pole_id id, uint16_t value);
-void pwm_duty_write_all(uint16_t value);
-//指定した比率に設定する
-void pwm_rate_write(pwm_pole_id id,q15_t rate);//(Q16 Format)
-void pwm_rate_write_all(q15_t rate);
-void pwm_rate_each(q15_t a, q15_t b, q15_t c);
+q16_t pwm_duty();//実行中のduty比
 
+void pwm_write(pwm_state_name_t state, q16_t rate);
+//よく使うであろう処理の別名
+#define pwm_write_free() pwm_write(PWM_STATE_FREE,0)
+#define pmw_write_lock() pwm_write(PWM_STATE_LOCK,0)
 
 typedef void (pwm_handler_t(void*));
 void pwm_event(pwm_handler_t, void*); //割り込みに関数ポインタを登録

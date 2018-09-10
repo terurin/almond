@@ -45,19 +45,29 @@ static inline bool sign32(int32_t x){
 }
 
 //領域制限用
-static inline int16_t clip16(int16_t x,int16_t max,int16_t min){
+static inline int16_t clip15(int16_t x,int16_t max,int16_t min){
     if (x>max)return max;
     else if (min>x)return min;
     else return x;
 }
 
-static inline int16_t clip32(int32_t x,int32_t max,int32_t min){
+static inline uint16_t clip16(uint16_t x,uint16_t max,uint16_t min){
     if (x>max)return max;
     else if (min>x)return min;
     else return x;
 }
 
+static inline int16_t clip31(int32_t x,int32_t max,int32_t min){
+    if (x>max)return max;
+    else if (min>x)return min;
+    else return x;
+}
 
+static inline uint16_t clip32(uint32_t x,uint32_t max,uint32_t min){
+    if (x>max)return max;
+    else if (min>x)return min;
+    else return x;
+}
 
 
 //Q-Format変換用のマクロ, xは被変換数,sはフォーマット形式

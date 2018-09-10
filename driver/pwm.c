@@ -19,64 +19,21 @@
 #define CYCLE (10.0e3)
 static const uint32_t cycle = CYCLE;
 #if UP_DOWN == true
-static const uint16_t period =FCY/CYCLE/2;
+static const uint16_t period = FCY / CYCLE / 2;
 #else
-static const uint16_t period =FCY/CYCLE;
+static const uint16_t period = FCY / CYCLE;
 #endif
 
-static q15_t duty_max = QCAST(0.9f, 15); //dutyの上限
-static q15_t duty_min = QCAST(0.1f, 15); //duty比の下限(安全対策)
+static q16_t duty_max = QCAST(0.9f, 16); //dutyの上限
+static q16_t duty_min = QCAST(0.1f, 16); //duty比の下限(安全対策)
+static q16_t duty = 0; //現在のduty比
 
 //内部テーブル
-static volatile uint16_t * const dc_table[] = {&P1DC1, &P1DC2, &P1DC3};
+//static volatile uint16_t * const dc_table[] = {&P1DC1, &P1DC2, &P1DC3};
 
 //割り込み　コールバック用
 static pwm_handler_t* callback_handler = NULL;
 static void *callback_object = NULL;
-
-//制限関数
-
-static inline uint16_t clip(q0016_t rate) {
-    bool up = rate>duty_max;
-    bool down = rate<duty_min;
-    if (!up&!down) {
-        uint16_t duty = ((uint32_t) period * rate) >> 14;
-        return duty;
-    } else if (up) {
-        return duty_max;
-    } else {
-        //stop motor because duty is too few
-        return 0;
-    }
-}
-
-
-
-//すべてのHBを開放する
-static const P1OVDCONBITS ov_free = {
-    //PWM1
-    .POVD1H = false, .POVD1L = false, //use pwm module outputs?
-    .POUT1H = false, .POUT1L = false, //manual output
-    //PWM2
-    .POVD2H = false, .POVD2L = false, //use pwm module outputs?
-    .POUT2H = false, .POUT2L = false, //manual output
-    //PWM3
-    .POVD3H = false, .POVD3L = false, //use pwm module outputs?
-    .POUT3H = false, .POUT3L = false, //manual output
-};
-
-//すべてのHBを用いてブレーキをかける。
-static const P1OVDCONBITS ov_lock = {
-    //PWM1
-    .POVD1H = false, .POVD1L = false, //use pwm module outputs?
-    .POUT1H = false, .POUT1L = true, //manual output
-    //PWM2
-    .POVD2H = false, .POVD2L = false, //use pwm module outputs?
-    .POUT2H = false, .POUT2L = true, //manual output
-    //PWM3
-    .POVD3H = false, .POVD3L = false, //use pwm module outputs?
-    .POUT3H = false, .POUT3L = true, //manual output
-};
 
 //矩形制御用
 static const P1OVDCONBITS ov_table[] = {
@@ -155,6 +112,30 @@ static const P1OVDCONBITS ov_table[] = {
         //PWM3
         .POVD3H = true, .POVD3L = false, //use pwm module outputs?
         .POUT3H = false, .POUT3L = false, //manual output
+    },
+    //STATE LOCK
+    {
+        //PWM1
+        .POVD1H = false, .POVD1L = false, //use pwm module outputs?
+        .POUT1H = false, .POUT1L = true, //manual output
+        //PWM2
+        .POVD2H = false, .POVD2L = false, //use pwm module outputs?
+        .POUT2H = false, .POUT2L = true, //manual output
+        //PWM3
+        .POVD3H = false, .POVD3L = false, //use pwm module outputs?
+        .POUT3H = false, .POUT3L = true, //manual output
+    },
+    //STATE FREE
+    {
+        //PWM1
+        .POVD1H = false, .POVD1L = false, //use pwm module outputs?
+        .POUT1H = false, .POUT1L = false, //manual output
+        //PWM2
+        .POVD2H = false, .POVD2L = false, //use pwm module outputs?
+        .POUT2H = false, .POUT2L = false, //manual output
+        //PWM3
+        .POVD3H = false, .POVD3L = false, //use pwm module outputs?
+        .POUT3H = false, .POUT3L = false, //manual output
     }
 };
 
@@ -212,12 +193,10 @@ void pwm_init() {
     PWM2CON2bits = pwm2;
     P1DTCON1bits = p1dt;
     P1DTCON2bits = p2dt;
-    P1OVDCONbits = ov_free;
     //カウンタを初期化する
-
-    PTPER=period;
+    PTPER = period;
     PTMR = 0;
-    pwm_duty_write_all(0);
+    pwm_write_free();
     //割り込みを許可する
     IFS3bits.PWM1IF = false;
     IPC14bits.PWM1IP = PWM_PRI; //割り込み優先度(up to 7)
@@ -234,45 +213,19 @@ uint16_t pwm_period() {
     return period;
 }
 
-void pwm_state(pwm_state_name_t state) {
-    P1OVDCONBITS mode;
-    //定数テーブルから引く
-    if (state < PWM_STATE_END) {
-        mode = ov_table[state];
-    } else if (state == PWM_STATE_LOCK) {
-        mode = ov_lock;
-    } else {
-        mode = ov_free;
-    }
+q16_t pwm_duty() {
+    return duty;
+}
+
+void pwm_write(pwm_state_name_t state, q16_t rate) {
+    //波形パターンを選択する
+    const P1OVDCONBITS mode = state < PWM_STATE_END ? ov_table[state] : ov_table[PWM_STATE_FREE];
+    //制限域に入れる
+    const q16_t limited = clip16(rate, duty_max, duty_min);
+    const uint16_t raw = limited*period;
     //書き込み
     P1OVDCONbits = mode;
-}
-
-void pwm_duty_write(pwm_pole_id id, uint16_t value) {
-    if (PWM_POLE_A <= id && id < PWM_POLE_END) {
-        *dc_table[id] = value;
-    }
-}
-
-void pwm_duty_write_all(uint16_t value) {
-    size_t idx;
-    for (idx = 0; idx < (sizeof (dc_table) / sizeof (dc_table[0])); idx++) {
-        *dc_table[idx] = value;
-    }
-}
-
-void pwm_rate_write(pwm_pole_id id, q15_t rate) {
-    pwm_duty_write(id, clip(rate));
-}
-
-void pwm_rate_write_all(q15_t rate) {
-    pwm_duty_write_all(clip(rate));
-}
-
-void pwm_rate_each(q15_t a, q15_t b, q15_t c) {
-    *dc_table[PWM_POLE_A] = clip(a);
-    *dc_table[PWM_POLE_B] = clip(b);
-    *dc_table[PWM_POLE_C] = clip(c);
+    P1DC1 = P1DC2 = P1DC3 = raw;
 }
 
 void pwm_event(pwm_handler_t hwnd, void* obj) {
