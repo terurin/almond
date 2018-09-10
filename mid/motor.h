@@ -13,8 +13,10 @@ void motor_init();
 /*void motor_rate(q15_t duty);
 void motor_free();
 void motor_control();*/
-
-
+//状態遷移
+void motor_free();//開放状態へ遷移
+void motor_lock();//静止状態へ遷移
+void motor_duty(q15_t rate);
 
 
 

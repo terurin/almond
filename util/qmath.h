@@ -29,19 +29,19 @@ static inline float q2308_cast(q2308_t x){
 }
 
 //安全な絶対値の取得関数
-static inline int16_t qabs16(int16_t x){
-    if (x>0)return x;
-    else if(x!=INT16_MIN)return -x;
+static inline int16_t abs15_s(int16_t x){
+    if (x>=0)return x;
+    else if(x>INT16_MIN)return -x;
     else return INT16_MAX;
 }
 
 //符号取得用
-static inline bool sign16(int16_t x){
-    return (0x8000&x)?true:false;
+static inline bool sign15(int16_t x){
+    return (x>=0)?true:false;
 }
 
-static inline bool sign32(int32_t x){
-    return (0x80000000&x)?true:false;
+static inline bool sign31(int32_t x){
+    return (x>=0)?true:false;
 }
 
 //領域制限用

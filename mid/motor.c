@@ -37,12 +37,12 @@ const static pwm_state_name_t table_back[8] = {
 //ローカルな宣言
 static void event_otw(int_id, void*);
 static void event_fault(int_id, void*);
-static void ctrl_free(void*);
-static void ctrl_brake(void*);
+
+
 static void ctrl_duty(void*);
 
 void motor_init() {
-    
+
     //ドライバの要因割り込みを初期化する
     //set port as readable
     port_read(pin_cast_port(PIN_OTW));
@@ -59,47 +59,60 @@ void motor_init() {
     //interrupt assign
     int_event(INT_ID_1, event_otw, NULL);
     int_event(INT_ID_2, event_fault, NULL);
-    
-    //PWMの制御方法を選択する
-    pwm_event(ctrl_free,NULL);
 
+    //PWMの制御方法を選択する
+    motor_free();
 }
 
+//開放状態の動作
 
-
-/*void motor_rate(q15_t duty) {
-    hole_t hole = hole_sense();
-    q15_t abs = qabs16(duty);
-    pwm_rate_write_all(abs);
-    pwm_state(duty >= 0 ? table_front[hole] : table_back[hole]);
+static void ctrl_free(void* obj) {
+    pwm_write_free();
 }
 
 void motor_free() {
-    pwm_duty_write_all(0);
-    pwm_state(PWM_STATE_FREE);
-}*/
+    pwm_event(ctrl_free, NULL);
+}
+
+//静止時の動作
+
+static void ctrl_lock(void* obj) {
+    pwm_write_lock();
+}
+
+void motor_lock() {
+    pwm_event_default(ctrl_lock);
+}
+
+//固定回転数で駆動
+static void ctrl_duty(void* obj){
+    const hole_t hole = hole_sense(); 
+    const q15_t x= (obj!=NULL)?*(int16_t*)obj:0;
+    const pwm_state_name_t next=(x>=0)?table_front[hole]:table_back[hole];
+    const q16_t abs = abs15_s(x);
+    pwm_write(next,abs);
+   
+}
+
+void motor_duty(q15_t rate){
+    static q15_t instance;
+    instance=rate;//stackから静的領域にコピーする
+    pwm_event(ctrl_duty,&rate);
+}
 
 
+
+//エラーに対応させる
 static void event_otw(int_id id, void* obj) {
-    //motor_free();
+    pwm_write_free();
+    motor_free();
     uart_putl("warming over temperature on driver");
     led_off(LED_A);
 }
 
 static void event_fault(int_id id, void* obj) {
-//    motor_free();
+    pwm_write_free();
+    motor_free();
     uart_putl("warming fault on driver");
     led_off(LED_A);
-}
-
-static void ctrl_free(void* obj){
-    
-}
-
-static void ctrl_brake(void* obj){
-    
-}
-
-static void ctrl_duty(void* obj){
-    
 }

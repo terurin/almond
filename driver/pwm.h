@@ -43,8 +43,9 @@ q16_t pwm_duty();//実行中のduty比
 void pwm_write(pwm_state_name_t state, q16_t rate);
 //よく使うであろう処理の別名
 #define pwm_write_free() pwm_write(PWM_STATE_FREE,0)
-#define pmw_write_lock() pwm_write(PWM_STATE_LOCK,0)
+#define pwm_write_lock() pwm_write(PWM_STATE_LOCK,0)
 
 typedef void (pwm_handler_t(void*));
 void pwm_event(pwm_handler_t, void*); //割り込みに関数ポインタを登録
+#define pwm_event_default(x) pwm_event(x,NULL)
 #endif

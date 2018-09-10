@@ -10,6 +10,7 @@
 #include "driver/adc.h"
 #include "mid/hole.h"
 #include "util/qmath.h"
+#include "mid/motor.h"
 
 static inline void delay(uint64_t a) {
     while (a > 0) {
@@ -20,6 +21,7 @@ static inline void delay(uint64_t a) {
 static void init() {
     driver_init();
     mid_init();
+    motor_duty(QCAST(0.3, 15));
 }
 
 int main(void) {
