@@ -21,15 +21,22 @@ static inline void delay(uint64_t a) {
 static void init() {
     driver_init();
     mid_init();
-    motor_duty(QCAST(0.3, 15));
+    //motor_duty(QCAST(0.3, 15));
 }
+#include <stdbool.h>
+static char digit(bool x){
+    return x?'1':'0';
+}
+
 
 int main(void) {
     init();
 
     for (;;) {
-        char c = hole_sense_raw() + '0';
+        int c = hole_sense_raw();
         uart_putc(c);
+        
+        for (int d=0;d<1000;d++);
     }
 
     return 0;
