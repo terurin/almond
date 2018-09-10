@@ -9,6 +9,7 @@
 #include "timer.h"
 #include "adc.h"
 int driver_init(){
+    //内蔵モジュールの初期化
     clock_init();
     timer23_init();
     int_init();
@@ -17,6 +18,7 @@ int driver_init(){
     qei_init();
     pwm_init();
     adc_init();
+    
     return 0;
 }
 

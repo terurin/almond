@@ -17,6 +17,7 @@ enum hole{
 typedef enum hole hole_t;
 
 void hole_init();
+
 int hole_sense_raw();
 hole_t hole_sense();
 int hole_diff(hole_t now,hole_t last);//進行度を得る

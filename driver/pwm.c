@@ -56,19 +56,6 @@ static inline uint16_t clip(q0016_t rate) {
 static const P1OVDCONBITS ov_free = {
     //PWM1
     .POVD1H = false, .POVD1L = false, //use pwm module outputs?
-    .POUT1H = false, .POUT1L = true, //manual output
-    //PWM2
-    .POVD2H = false, .POVD2L = false, //use pwm module outputs?
-    .POUT2H = false, .POUT2L = true, //manual output
-    //PWM3
-    .POVD3H = false, .POVD3L = false, //use pwm module outputs?
-    .POUT3H = false, .POUT3L = true, //manual output
-};
-
-//すべてのHBを用いてブレーキをかける。
-static const P1OVDCONBITS ov_lock = {
-    //PWM1
-    .POVD1H = false, .POVD1L = false, //use pwm module outputs?
     .POUT1H = false, .POUT1L = false, //manual output
     //PWM2
     .POVD2H = false, .POVD2L = false, //use pwm module outputs?
@@ -76,6 +63,19 @@ static const P1OVDCONBITS ov_lock = {
     //PWM3
     .POVD3H = false, .POVD3L = false, //use pwm module outputs?
     .POUT3H = false, .POUT3L = false, //manual output
+};
+
+//すべてのHBを用いてブレーキをかける。
+static const P1OVDCONBITS ov_lock = {
+    //PWM1
+    .POVD1H = false, .POVD1L = false, //use pwm module outputs?
+    .POUT1H = false, .POUT1L = true, //manual output
+    //PWM2
+    .POVD2H = false, .POVD2L = false, //use pwm module outputs?
+    .POUT2H = false, .POUT2L = true, //manual output
+    //PWM3
+    .POVD3H = false, .POVD3L = false, //use pwm module outputs?
+    .POUT3H = false, .POUT3L = true, //manual output
 };
 
 //矩形制御用
@@ -97,29 +97,16 @@ static const P1OVDCONBITS ov_table[] = {
     {
         //PWM1
         .POVD1H = true, .POVD1L = false, //use pwm module outputs?
-        .POUT1H = false, .POUT1L = false, //manual output
-        //PWM2
-        .POVD2H = false, .POVD2L = false, //use pwm module outputs?
-        .POUT2H = false, .POUT2L = true, //manual output
-        //PWM3
-        .POVD3H = false, .POVD3L = false, //use pwm module outputs?
-        .POUT3H = false, .POUT3L = false, //manual output
-
-    },
-    //STATE B->C
-    {
-        //PWM1
-        .POVD1H = false, .POVD1L = false, //use pwm module outputs?
         .POUT1H = false, .POUT1L = true, //manual output
         //PWM2
-        .POVD2H = true, .POVD2L = false, //use pwm module outputs?
+        .POVD2H = false, .POVD2L = false, //use pwm module outputs?
         .POUT2H = false, .POUT2L = false, //manual output
         //PWM3
         .POVD3H = false, .POVD3L = false, //use pwm module outputs?
-        .POUT3H = false, .POUT3L = false, //manual output
+        .POUT3H = false, .POUT3L = true, //manual output
 
     },
-    //STATE B->A
+    //STATE B->C
     {
         //PWM1
         .POVD1H = false, .POVD1L = false, //use pwm module outputs?
@@ -132,14 +119,27 @@ static const P1OVDCONBITS ov_table[] = {
         .POUT3H = false, .POUT3L = true, //manual output
 
     },
+    //STATE B->A
+    {
+        //PWM1
+        .POVD1H = false, .POVD1L = false, //use pwm module outputs?
+        .POUT1H = false, .POUT1L = true, //manual output
+        //PWM2
+        .POVD2H = true, .POVD2L = false, //use pwm module outputs?
+        .POUT2H = false, .POUT2L = false, //manual output
+        //PWM3
+        .POVD3H = false, .POVD3L = false, //use pwm module outputs?
+        .POUT3H = false, .POUT3L = false, //manual output
+
+    },
     //STATE C->A
     {
         //PWM1
         .POVD1H = false, .POVD1L = false, //use pwm module outputs?
-        .POUT1H = false, .POUT1L = false, //manual output
+        .POUT1H = false, .POUT1L = true, //manual output
         //PWM2
         .POVD2H = false, .POVD2L = false, //use pwm module outputs?
-        .POUT2H = false, .POUT2L = true, //manual output
+        .POUT2H = false, .POUT2L = false, //manual output
         //PWM3
         .POVD3H = true, .POVD3L = false, //use pwm module outputs?
         .POUT3H = false, .POUT3L = false, //manual output
@@ -148,10 +148,10 @@ static const P1OVDCONBITS ov_table[] = {
     {
         //PWM1
         .POVD1H = false, .POVD1L = false, //use pwm module outputs?
-        .POUT1H = false, .POUT1L = true, //manual output
+        .POUT1H = false, .POUT1L = false, //manual output
         //PWM2
         .POVD2H = false, .POVD2L = false, //use pwm module outputs?
-        .POUT2H = false, .POUT2L = false, //manual output
+        .POUT2H = false, .POUT2L = true, //manual output
         //PWM3
         .POVD3H = true, .POVD3L = false, //use pwm module outputs?
         .POUT3H = false, .POUT3L = false, //manual output
@@ -256,7 +256,7 @@ void pwm_duty_write(pwm_pole_id id, uint16_t value) {
 
 void pwm_duty_write_all(uint16_t value) {
     size_t idx;
-    for (idx = 0; idx < (sizeof (dc_table[0]) / sizeof (dc_table)); idx++) {
+    for (idx = 0; idx < (sizeof (dc_table) / sizeof (dc_table[0])); idx++) {
         *dc_table[idx] = value;
     }
 }

@@ -9,31 +9,26 @@
 #include "driver/uart.h"
 #include "driver/adc.h"
 #include "mid/hole.h"
+#include "util/qmath.h"
 
-void test(void* obj){
-    led_toggle(LED_A);
-}
-
-static inline void delay(uint64_t a){
-    while (a>0){
+static inline void delay(uint64_t a) {
+    while (a > 0) {
         a--;
     }
 }
 
-
-
-
-int main(void) {
-    char line[32];
-    char* it;
+static void init() {
     driver_init();
     mid_init();
-    
-    for(;;){
-        char hole= hole_sense_raw()+'0';
-        uart_putc(hole);
-        delay(10000);
+}
+
+int main(void) {
+    init();
+
+    for (;;) {
+        char c = hole_sense_raw() + '0';
+        uart_putc(c);
     }
-    
+
     return 0;
 }

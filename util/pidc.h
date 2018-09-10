@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
-#include "qmath.h"
+#include "dsp_type.h"
 
 
 struct pidc{

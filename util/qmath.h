@@ -4,8 +4,8 @@
 #ifndef UTIL_QMATH_HEADER_GUARD
 #define UTIL_QMATH_HEADER_GUARD
 
-#include <stdint.h>
 #include "dsp_type.h"
+
 
 static inline q0708_t q0708_f(float x){
     return x>=0?(q0708_t)(x*255.0f):(q0708_t)(x*256.0f);
@@ -34,6 +34,30 @@ static inline int16_t qabs16(int16_t x){
     else if(x!=INT16_MIN)return -x;
     else return INT16_MAX;
 }
+
+//符号取得用
+static inline bool sign16(int16_t x){
+    return (0x8000&x)?true:false;
+}
+
+static inline bool sign32(int32_t x){
+    return (0x80000000&x)?true:false;
+}
+
+//領域制限用
+static inline int16_t clip16(int16_t x,int16_t max,int16_t min){
+    if (x>max)return max;
+    else if (min>x)return min;
+    else return x;
+}
+
+static inline int16_t clip32(int32_t x,int32_t max,int32_t min){
+    if (x>max)return max;
+    else if (min>x)return min;
+    else return x;
+}
+
+
 
 
 //Q-Format変換用のマクロ, xは被変換数,sはフォーマット形式

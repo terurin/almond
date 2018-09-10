@@ -1,4 +1,5 @@
 #include "pidc.h"
+#include "qmath.h"
 
 static inline int16_t abs16(int16_t x){
     return x>=0?(+x):(-x);
@@ -7,29 +8,6 @@ static inline int16_t abs16(int16_t x){
 static inline int32_t abs32(int32_t x){
     return x>=0?(+x):(-x);
 }
-
-
-static inline int16_t clip16(int16_t value,int16_t high,int16_t low){
-    if (low<value&&value<high){
-        return value;
-    }else if (value>high){
-        return high;
-    }else {
-        return low;
-    }
-}
-
-static inline int32_t clip32(int32_t value,int32_t high,int32_t low){
-    if (low<value&&value<high){
-        return value;
-    }else if (value>high){
-        return high;
-    }else {
-        return low;
-    }
-}
-
-
 
 void pidc_init(pidc_ptr obj,q0708_t p,q0708_t i,q0708_t d){
     if (obj==NULL)return;
