@@ -7,7 +7,7 @@
 #define __UTIL_DSP_TYPE_HAERER_GUARD__
 
 #include <stdint.h>
-#include <stdbool.h>
+
 /*補足
  * qXXYY_tの形式で表現されている型は
  * XXは整数bitでYYは小数点以下のbit数を意味する

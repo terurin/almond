@@ -41,6 +41,7 @@
         <itemPath>util/filter.h</itemPath>
         <itemPath>util/dsp_type.h</itemPath>
         <itemPath>util/tick.h</itemPath>
+        <itemPath>util/text.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -82,6 +83,7 @@
         <itemPath>util/qmath.c</itemPath>
         <itemPath>util/filter.c</itemPath>
         <itemPath>util/tick.c</itemPath>
+        <itemPath>util/text.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -90,8 +92,8 @@
       <itemPath>Makefile</itemPath>
       <itemPath>.gitignore</itemPath>
     </logicalFolder>
-    <itemPath>util/text.c</itemPath>
-    <itemPath>util/text.h</itemPath>
+    <itemPath>mid/control.c</itemPath>
+    <itemPath>mid/control.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>.</Elem>

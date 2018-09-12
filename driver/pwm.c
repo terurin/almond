@@ -27,6 +27,7 @@ static const uint16_t period = FCY / CYCLE;
 static q16_t duty_max = QCAST(0.9f, 16); //dutyの上限
 static q16_t duty_min = QCAST(0.1f, 16); //duty比の下限(安全対策)
 static q16_t duty = 0; //現在のduty比
+static pwm_state_name_t state; //現在のstate
 
 //内部テーブル
 //static volatile uint16_t * const dc_table[] = {&P1DC1, &P1DC2, &P1DC3};
@@ -217,17 +218,21 @@ q16_t pwm_duty() {
     return duty;
 }
 
+pwm_state_name_t pwm_state() {
+    return state;
+}
+
 void pwm_write(pwm_state_name_t state, q16_t rate) {
     //波形パターンを選択する
     const P1OVDCONBITS mode = state < PWM_STATE_END ? ov_table[state] : ov_table[PWM_STATE_FREE];
     //制限域に入れる
     const q16_t limited = clip16(rate, duty_max, duty_min);
-    const uint16_t raw = ((uint32_t)limited*period)>>16;
+    const uint16_t raw = ((uint32_t) limited * period) >> 16;
     //書き込み
     P1OVDCONbits = mode;
     P1DC1 = P1DC2 = P1DC3 = raw;
     //更新
-    duty=limited;
+    duty = limited;
 }
 
 void pwm_event(pwm_handler_t hwnd, void* obj) {
@@ -242,4 +247,30 @@ void __attribute__((interrupt, no_auto_psv)) _MPWM1Interrupt() {
         callback_handler(callback_object);
     }
     IFS3bits.PWM1IF = false;
+}
+
+pwm_state_name_t pwm_state_next(pwm_state_name_t state) {
+    const static pwm_state_name_t list [] = {
+        PWM_STATE_AC,
+        PWM_STATE_BC,
+        PWM_STATE_BA,
+        PWM_STATE_CA,
+        PWM_STATE_CB,
+        PWM_STATE_AB
+    };
+    const int idx = (int) state;
+    return idx < PWM_STATE_LOCK ? list[state] : PWM_STATE_FREE;
+}
+
+pwm_state_name_t pwm_state_back(pwm_state_name_t state) {
+    const static pwm_state_name_t list [] = {
+        PWM_STATE_CB,
+        PWM_STATE_AB,
+        PWM_STATE_AC,
+        PWM_STATE_BC,
+        PWM_STATE_BA,
+        PWM_STATE_CA
+    };
+    const int idx = (int) state;
+    return idx < PWM_STATE_LOCK ? list[state] : PWM_STATE_FREE;
 }

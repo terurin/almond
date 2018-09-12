@@ -39,7 +39,7 @@ void pwm_init();
 uint32_t pwm_cycle(); //pwmの制御周波数を取得
 uint16_t pwm_period(); //pwmの制御周期を取得
 q16_t pwm_duty();//実行中のduty比
-
+pwm_state_name_t pwm_state();//実行中のstate
 void pwm_write(pwm_state_name_t state, q16_t rate);
 //よく使うであろう処理の別名
 #define pwm_write_free() pwm_write(PWM_STATE_FREE,0)
@@ -48,4 +48,7 @@ void pwm_write(pwm_state_name_t state, q16_t rate);
 typedef void (pwm_handler_t(void*));
 void pwm_event(pwm_handler_t, void*); //割り込みに関数ポインタを登録
 #define pwm_event_default(x) pwm_event(x,NULL)
+
+pwm_state_name_t pwm_state_next(pwm_state_name_t);
+pwm_state_name_t pwm_state_back(pwm_state_name_t);
 #endif

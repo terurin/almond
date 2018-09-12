@@ -32,7 +32,7 @@ int main(void) {
     stopwatch16_t st;
     stopwatch16_init_timer1(&st);
     char buf[16];
-    int s;
+    
     for (;;) {
         uint16_t d = stopwatch16_count(&st);
         text_hex16(buf,d);

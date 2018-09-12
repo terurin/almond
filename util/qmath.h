@@ -5,7 +5,7 @@
 #define UTIL_QMATH_HEADER_GUARD
 
 #include "dsp_type.h"
-
+#include <stdbool.h>
 
 static inline q0708_t q0708_f(float x){
     return x>=0?(q0708_t)(x*255.0f):(q0708_t)(x*256.0f);
@@ -17,9 +17,6 @@ static inline float q0708_cast(q0708_t x){
 static inline q15_t q15_f(float x){
     return x>=0?(q0708_t)(x*INT16_MAX):(q0708_t)(x*-INT16_MIN);
 }
-
-
-
 
 static inline q2308_t q2308_f(float x){
     return x>=0?(q2308_t)(x*255.0f):(q2308_t)(x*256.0f);

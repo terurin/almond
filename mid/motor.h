@@ -17,8 +17,7 @@ void motor_control();*/
 void motor_free();//開放状態へ遷移
 void motor_lock();//静止状態へ遷移
 void motor_duty(q15_t rate);
-void motor_force(q0708_t period);//holeセンサー無しで強制的に回転させるモード
-
+//void motor_force(tick16_t ,q15_t duty);//強制駆動
 
 enum drv_status{
     DRV_STATUS_NONE,

@@ -9,31 +9,9 @@
 #include <driver/int.h>
 #include <driver/cn.h>
 #include <driver/port.h>
-#include <util/qmath.h>
 
+#include"control.h"
 
-//ホールセンサの状態とPWM出力状態の対応表
-//前進
-const static pwm_state_name_t table_front[8] = {
-    PWM_STATE_CA, //A->AB
-    PWM_STATE_CB, //AB->CB
-    PWM_STATE_AB, //B->AB
-    PWM_STATE_AC, //BC->AC
-    PWM_STATE_BC, //C->BC
-    PWM_STATE_BA, //CA->BA
-    PWM_STATE_FREE//null->free
-};
-
-//後退
-const static pwm_state_name_t table_back[8] = {
-    PWM_STATE_BA, //A->BA
-    PWM_STATE_CA, //AB->CA
-    PWM_STATE_CB, //B->CB
-    PWM_STATE_AB, //BC->AB
-    PWM_STATE_AC, //C->AC
-    PWM_STATE_BC, //CA->BC
-    PWM_STATE_FREE//null->free
-};
 
 //ローカルな宣言
 static void event_otw(int_id, void*);
@@ -78,67 +56,26 @@ static void event_fault(int_id id, void* obj) {
     led_off(LED_A);
 }
 
-
-
 //開放状態の動作
 
-static void ctrl_free(void* obj) {
-    pwm_write_free();
-}
-
 void motor_free() {
-    pwm_event(ctrl_free, NULL);
+    free_enter();
 }
 
 //静止時の動作
 
-static void ctrl_lock(void* obj) {
-    pwm_write_lock();
-}
-
 void motor_lock() {
-    pwm_event_default(ctrl_lock);
+    lock_enter();
 }
 
 //固定回転数で駆動
 
-static void ctrl_duty(void* obj) {
-    const hole_t hole = hole_sense();
-    const q15_t x = (obj != NULL) ? *(int16_t*) obj : 0;
-    const pwm_state_name_t next = (x >= 0) ? table_front[hole] : table_back[hole];
-    const q16_t abs = abs15_s(x);
-    pwm_write(next, abs);
-
-}
-
 void motor_duty(q15_t rate) {
-    static q15_t instance;
-    instance = rate; //stackから静的領域にコピーする
-    pwm_event(ctrl_duty, &rate);
+    duty_enter(rate);
 }
 
 //強制的に回す制御
 
-typedef struct {
-    tick32_t last;
-    tick32_t sum;
-    q0708_t period;
-} force_t;
-
-static void ctrl_force(void *obj) {
-    force_t* instance = (force_t*) obj;
-
-
-
-
-}
-
-
-
-
-void motor_force(q0708_t period) {
-    static force_t instance;
-    //instance.last=timer23_init();
-    //instance.period=period;
-    pwm_event(ctrl_force, &instance);
+void motor_force(tick16_t period, q15_t duty) {
+    force_enter(period, duty);
 }

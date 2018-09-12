@@ -31,7 +31,7 @@ void stopwatch16_init(stopwatch16_t* obj, tick16_source_t source, uint16_t max) 
 }
 
 tick16_t stopwatch16_count(stopwatch16_t *obj) {
-    if (!obj)return;
+    if (!obj)return 0;
     const tick16_t now = obj->source();
     const tick16_t diff =tick16_diff(now,obj->last,obj->max);
     obj->last=now;
