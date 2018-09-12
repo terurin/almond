@@ -4,6 +4,7 @@
 #include <driver/pwm.h>
 #include "driver/config.h"
 #include "driver/uart.h"
+#include "driver/timer.h"
 #include <driver/pin.h>
 #include <driver/int.h>
 #include <driver/cn.h>
@@ -38,9 +39,6 @@ const static pwm_state_name_t table_back[8] = {
 static void event_otw(int_id, void*);
 static void event_fault(int_id, void*);
 
-
-static void ctrl_duty(void*);
-
 void motor_init() {
 
     //ドライバの要因割り込みを初期化する
@@ -64,6 +62,24 @@ void motor_init() {
     motor_free();
 }
 
+//エラーに対応させる
+
+static void event_otw(int_id id, void* obj) {
+    pwm_write_free();
+    motor_free();
+    uart_putl("warming over temperature on driver");
+    led_off(LED_A);
+}
+
+static void event_fault(int_id id, void* obj) {
+    pwm_write_free();
+    motor_free();
+    uart_putl("warming fault on driver");
+    led_off(LED_A);
+}
+
+
+
 //開放状態の動作
 
 static void ctrl_free(void* obj) {
@@ -85,34 +101,44 @@ void motor_lock() {
 }
 
 //固定回転数で駆動
-static void ctrl_duty(void* obj){
-    const hole_t hole = hole_sense(); 
-    const q15_t x= (obj!=NULL)?*(int16_t*)obj:0;
-    const pwm_state_name_t next=(x>=0)?table_front[hole]:table_back[hole];
+
+static void ctrl_duty(void* obj) {
+    const hole_t hole = hole_sense();
+    const q15_t x = (obj != NULL) ? *(int16_t*) obj : 0;
+    const pwm_state_name_t next = (x >= 0) ? table_front[hole] : table_back[hole];
     const q16_t abs = abs15_s(x);
-    pwm_write(next,abs);
-   
+    pwm_write(next, abs);
+
 }
 
-void motor_duty(q15_t rate){
+void motor_duty(q15_t rate) {
     static q15_t instance;
-    instance=rate;//stackから静的領域にコピーする
-    pwm_event(ctrl_duty,&rate);
+    instance = rate; //stackから静的領域にコピーする
+    pwm_event(ctrl_duty, &rate);
+}
+
+//強制的に回す制御
+
+typedef struct {
+    tick32_t last;
+    tick32_t sum;
+    q0708_t period;
+} force_t;
+
+static void ctrl_force(void *obj) {
+    force_t* instance = (force_t*) obj;
+
+
+
+
 }
 
 
 
-//エラーに対応させる
-static void event_otw(int_id id, void* obj) {
-    pwm_write_free();
-    motor_free();
-    uart_putl("warming over temperature on driver");
-    led_off(LED_A);
-}
 
-static void event_fault(int_id id, void* obj) {
-    pwm_write_free();
-    motor_free();
-    uart_putl("warming fault on driver");
-    led_off(LED_A);
+void motor_force(q0708_t period) {
+    static force_t instance;
+    //instance.last=timer23_init();
+    //instance.period=period;
+    pwm_event(ctrl_force, &instance);
 }

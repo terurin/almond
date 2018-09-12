@@ -11,7 +11,7 @@
 int driver_init(){
     //内蔵モジュールの初期化
     clock_init();
-    timer23_init();
+    timer_init();
     int_init();
     change_init();
     uart_init();

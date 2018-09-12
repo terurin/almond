@@ -78,13 +78,13 @@ int hole_diff(hole_t now, hole_t last) {
 
 static void hole_event(){
     static hole_t hole_last=HOLE_END;
-    static tick_t tick_last=0;
+    static tick32_t tick_last=0;
     //データを取り込む
-    tick_t tick=timer23_tick();
+    tick32_t tick=timer23_tick();
     hole_t hole = hole_sense();
     //速度を計算
     q1516_t delta = rad_per_hole_32*hole_diff(hole,hole_last);
-    usec_t usec = tick_cast_usec(tick_diff(tick,tick_last));
+    usec16_t usec = usec16(timer23_diff(tick,tick_last),timer23_tps);
     speed = delta/usec;
     //更新
     hole_last=hole;
