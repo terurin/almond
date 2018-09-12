@@ -6,7 +6,7 @@
 #define __MID_MOTOR_HEADER_GUARD__
 
 #include <util/dsp_type.h>
-
+#include <util/tick.h>
 void motor_init();
 
 //周期的な呼び出しを行うこと
@@ -17,7 +17,7 @@ void motor_control();*/
 void motor_free();//開放状態へ遷移
 void motor_lock();//静止状態へ遷移
 void motor_duty(q15_t rate);
-//void motor_force(tick16_t ,q15_t duty);//強制駆動
+void motor_force(tick32_t ,q15_t duty);//強制駆動
 
 enum drv_status{
     DRV_STATUS_NONE,

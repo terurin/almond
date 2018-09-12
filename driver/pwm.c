@@ -222,17 +222,18 @@ pwm_state_name_t pwm_state() {
     return state;
 }
 
-void pwm_write(pwm_state_name_t state, q16_t rate) {
+void pwm_write(pwm_state_name_t mode, q16_t rate) {
     //波形パターンを選択する
-    const P1OVDCONBITS mode = state < PWM_STATE_END ? ov_table[state] : ov_table[PWM_STATE_FREE];
+    const P1OVDCONBITS patten = mode < PWM_STATE_END ? ov_table[mode] : ov_table[PWM_STATE_FREE];
     //制限域に入れる
     const q16_t limited = clip16(rate, duty_max, duty_min);
     const uint16_t raw = ((uint32_t) limited * period) >> 16;
     //書き込み
-    P1OVDCONbits = mode;
+    P1OVDCONbits = patten;
     P1DC1 = P1DC2 = P1DC3 = raw;
     //更新
     duty = limited;
+    state=mode;
 }
 
 void pwm_event(pwm_handler_t hwnd, void* obj) {

@@ -29,14 +29,12 @@ static void init() {
 int main(void) {
     //volatile tick32_t tick;
     init();
-    stopwatch16_t st;
-    stopwatch16_init_timer1(&st);
-    char buf[16];
+
     
+    motor_force(tick_msec(1000,timer1_tps),0x3fff);
     for (;;) {
-        uint16_t d = stopwatch16_count(&st);
-        text_hex16(buf,d);
-        uart_putl(buf);
+
+        uart_putc('7');
         delay(1000);
     }
 

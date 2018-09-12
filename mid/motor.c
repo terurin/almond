@@ -76,6 +76,6 @@ void motor_duty(q15_t rate) {
 
 //強制的に回す制御
 
-void motor_force(tick16_t period, q15_t duty) {
+void motor_force(tick32_t period, q15_t duty) {
     force_enter(period, duty);
 }

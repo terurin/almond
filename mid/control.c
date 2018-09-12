@@ -74,12 +74,13 @@ bool force_check_period(force_t* obj) {
 void force_process(void *obj) {
     force_t* p = (force_t*) obj;
     const q16_t abs = abs15_s(p->duty);
+    pwm_state_name_t next=pwm_state();
     if (force_check_period(p)) {
-        const pwm_state_name_t next = p->duty >= 0 ? pwm_state_next(pwm_state()) : pwm_state_back(pwm_state());
-        pwm_write(next, abs);
-    } else {
-        pwm_write(pwm_state(), abs);
-    }
+        next = p->duty >= 0 ? pwm_state_next(next) : pwm_state_back(next);
+    } 
+    //例外処理
+    next = next < PWM_STATE_LOCK ? next : PWM_STATE_AB;
+    pwm_write(next, abs);
 }
 
 void force_enter(tick32_t perioid, q15_t duty) {

@@ -24,6 +24,11 @@ usec16_t usec16(tick16_t tick, uint32_t tps) {
     return ((uint32_t) tick * 1000000) / tps;
 }
 
+tick32_t tick_msec(msec16_t msec,uint32_t tps){
+    return ((uint32_t) msec * tps/1000);
+}
+
+
 void stopwatch16_init(stopwatch16_t* obj, tick16_source_t source, uint16_t max) {
     if (!obj)return;
     obj->last = (obj->source = source)();

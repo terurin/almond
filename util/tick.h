@@ -15,6 +15,8 @@ tick32_t tick32_diff(tick32_t now, tick32_t last, tick32_t max);
 msec16_t msec16(tick16_t, uint32_t tps); //tick per sec
 usec16_t usec16(tick16_t, uint32_t tps);
 
+tick32_t tick_msec(msec16_t ,uint32_t tps);
+
 struct stopwatch16 {
     tick16_source_t source;
     tick16_t max;
